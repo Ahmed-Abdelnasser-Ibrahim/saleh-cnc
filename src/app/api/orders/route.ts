@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import { getDb, saveDb } from "@/lib/db";
 import { Order } from "@/lib/data";
 
-export async function GET() {
+const isAdmin = (request: Request) => {
+  return request.headers.get("x-admin-auth") === "true";
+};
+
+export async function GET(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const db = getDb();
     return NextResponse.json(db.orders || []);
@@ -16,8 +24,22 @@ export async function POST(request: Request) {
   try {
     const order = await request.json();
 
+    // Strict Order Validation
+    if (!order.customer || order.customer.length < 3) {
+      return NextResponse.json({ error: "الاسم مطلوب (على الأقل 3 أحرف)" }, { status: 400 });
+    }
+    
+    const phoneRegex = /^01[0125][0-9]{8}$/;
+    if (!order.phone || !phoneRegex.test(order.phone)) {
+      return NextResponse.json({ error: "رقم الهاتف غير صحيح (يجب أن يكون رقم مصري صالح)" }, { status: 400 });
+    }
+
+    if (!order.address || order.address.length < 5) {
+      return NextResponse.json({ error: "العنوان مطلوب بالتفصيل" }, { status: 400 });
+    }
+
     if (!order.items || !Array.isArray(order.items) || order.items.length === 0) {
-      return NextResponse.json({ error: "Order items are required" }, { status: 400 });
+      return NextResponse.json({ error: "السلة فارغة، لا يمكن إتمام الطلب" }, { status: 400 });
     }
 
     const db = getDb();
@@ -38,6 +60,10 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { id } = body;

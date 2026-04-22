@@ -48,6 +48,35 @@
   ],
   "orders": [
     {
+      "id": "ORD-2901",
+      "customer": "احمد",
+      "phone": "01068256479",
+      "address": "اوسيم",
+      "city": "الجيزة",
+      "items": [
+        {
+          "id": 3,
+          "name": "صندوق هدايا خشبي محفور",
+          "price": 180,
+          "category": "هدايا",
+          "image": "/images/box-1.jpg",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "لوحة جدارية إسلامية",
+          "price": 450,
+          "category": "ديكور جدران",
+          "image": "/images/wall-art-1.jpg",
+          "badge": "جديد",
+          "quantity": 1
+        }
+      ],
+      "total": 630,
+      "status": "pending",
+      "date": "2026-04-22T13:24:22.941Z"
+    },
+    {
       "id": "ORD-6985",
       "customer": "dsfsf",
       "phone": "dsfdf",

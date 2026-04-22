@@ -5,7 +5,6 @@ import { categories } from "@/lib/data";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-
 import Image from "next/image";
 
 export default function Categories() {
@@ -23,29 +22,33 @@ export default function Categories() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
           {categories.map((cat, i) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="group relative h-64 md:h-80 rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer shadow-2xl border border-white/5"
+            <Link 
+              key={cat.id} 
+              href={`/products?category=${encodeURIComponent(cat.name)}`}
             >
-              <Image
-                src={cat.image}
-                alt={cat.name}
-                fill
-                unoptimized
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3 text-center">{cat.name}</h3>
-                <div className="w-10 md:w-12 h-1 bg-amber-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
-              </div>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative h-48 sm:h-64 md:h-80 rounded-2xl md:rounded-3xl overflow-hidden cursor-pointer shadow-2xl border border-white/5"
+              >
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute inset-0 flex flex-col items-center justify-end md:justify-center p-4 md:p-6 text-center">
+                  <h3 className="text-base sm:text-xl md:text-2xl font-bold text-white mb-1 md:mb-3">{cat.name}</h3>
+                  <div className="w-8 md:w-12 h-0.5 md:h-1 bg-amber-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

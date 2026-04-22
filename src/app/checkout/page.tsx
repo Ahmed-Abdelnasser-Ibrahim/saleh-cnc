@@ -40,6 +40,23 @@ export default function CheckoutPage() {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    // Frontend Validation
+    if (formData.name.trim().length < 3) {
+      showToast("يرجى إدخال الاسم بالكامل (3 أحرف على الأقل)", "error");
+      return;
+    }
+
+    const phoneRegex = /^01[0125][0-9]{8}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      showToast("رقم الهاتف غير صحيح. يجب أن يكون رقم مصري صالح (مثال: 0106*******)", "error");
+      return;
+    }
+
+    if (formData.address.trim().length < 5) {
+      showToast("يرجى إدخال العنوان بالتفصيل", "error");
+      return;
+    }
     
     setIsSubmitting(true);
     
@@ -63,7 +80,11 @@ export default function CheckoutPage() {
         body: JSON.stringify(orderData),
       });
 
-      if (!res.ok) throw new Error("Failed to save order");
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to save order");
+      }
 
       const message = `طلب جديد من متجر صالح CNC 🚀\n\n` +
         `👤 العميل: ${formData.name}\n` +
@@ -84,8 +105,8 @@ export default function CheckoutPage() {
       clearCart();
       showToast("تم إرسال طلبك بنجاح ✅", "success");
       router.push("/");
-    } catch {
-      showToast("حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.", "error");
+    } catch (err: any) {
+      showToast(err.message || "حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.", "error");
     } finally {
       setIsSubmitting(false);
     }

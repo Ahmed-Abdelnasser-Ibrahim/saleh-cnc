@@ -24,6 +24,12 @@ export default function LoginPage() {
     }
   };
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem("isAdmin") === "true") {
+      router.replace("/admin");
+    }
+  }, [router]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 relative overflow-hidden">
       {/* Decorative Gradients */}

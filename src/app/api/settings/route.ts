@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { getDb, saveDb } from "@/lib/db";
 import { Settings } from "@/lib/data";
 
+const isAdmin = (request: Request) => {
+  return request.headers.get("x-admin-auth") === "true";
+};
+
 export async function GET() {
   try {
     const db = getDb();
@@ -13,6 +17,10 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const settings: Settings = await request.json();
     

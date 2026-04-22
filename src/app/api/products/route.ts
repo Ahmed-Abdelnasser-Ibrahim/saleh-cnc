@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { getDb, saveDb } from "@/lib/db";
 import { Product } from "@/lib/data";
 
+// Helper to check admin status
+const isAdmin = (request: Request) => {
+  return request.headers.get("x-admin-auth") === "true";
+};
+
 export async function GET() {
   try {
     const db = getDb();
@@ -13,12 +18,22 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const product = await request.json();
 
-    // Validation
-    if (!product.name || !product.price || !product.category) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Strict Validation
+    if (!product.name || typeof product.name !== 'string' || product.name.length < 3) {
+      return NextResponse.json({ error: "اسم المنتج مطلوب (على الأقل 3 أحرف)" }, { status: 400 });
+    }
+    if (!product.price || isNaN(Number(product.price)) || Number(product.price) <= 0) {
+      return NextResponse.json({ error: "سعر المنتج يجب أن يكون رقماً موجباً" }, { status: 400 });
+    }
+    if (!product.category) {
+      return NextResponse.json({ error: "تصنيف المنتج مطلوب" }, { status: 400 });
     }
 
     const db = getDb();
@@ -38,6 +53,10 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const updatedProduct = await request.json();
 
@@ -62,6 +81,10 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { id } = body;

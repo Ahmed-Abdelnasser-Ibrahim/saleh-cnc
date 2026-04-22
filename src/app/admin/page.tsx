@@ -17,7 +17,9 @@ export default function AdminDashboard() {
 
   const fetchOrders = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/orders");
+      const res = await fetch("/api/orders", {
+        headers: { "x-admin-auth": "true" }
+      });
       if (!res.ok) throw new Error("Failed to fetch orders");
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : []);
@@ -80,7 +82,7 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-[#050505]">
       <AdminSidebar />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">لوحة الإحصائيات</h1>
@@ -103,7 +105,7 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-slate-900 p-6 rounded-[32px] border border-white/5 shadow-xl hover:border-white/10 transition-all group"
+              className="bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-[32px] border border-white/5 shadow-xl hover:border-white/10 transition-all group"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-2xl ${stat.bgColor} ${stat.textColor} group-hover:scale-110 transition-transform`}>
@@ -124,7 +126,7 @@ export default function AdminDashboard() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Real Activity List */}
-          <div className="lg:col-span-2 bg-slate-900 rounded-[32px] border border-white/5 p-8 shadow-xl">
+          <div className="lg:col-span-2 bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
              <div className="flex items-center gap-2 mb-8">
                 <Clock className="text-amber-500" size={20} />
                 <h3 className="text-xl font-bold">آخر النشاطات</h3>
@@ -156,7 +158,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-slate-900 rounded-[32px] border border-white/5 p-8 shadow-xl">
+          <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
              <h3 className="text-xl font-bold mb-8">إجراءات سريعة</h3>
              <div className="space-y-4">
                 <button 

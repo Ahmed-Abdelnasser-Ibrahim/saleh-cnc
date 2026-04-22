@@ -19,7 +19,9 @@ export default function AdminOrdersPage() {
 
   const fetchOrders = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/orders");
+      const res = await fetch("/api/orders", {
+        headers: { "x-admin-auth": "true" }
+      });
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : []);
     } catch {
@@ -33,7 +35,10 @@ export default function AdminOrdersPage() {
     try {
       const res = await fetch("/api/orders", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-admin-auth": "true"
+        },
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
@@ -94,7 +99,7 @@ export default function AdminOrdersPage() {
     <div className="flex min-h-screen bg-[#050505]">
       <AdminSidebar />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div>
             <h1 className="text-3xl font-bold mb-2 text-white">إدارة الطلبات</h1>
@@ -181,7 +186,14 @@ export default function AdminOrdersPage() {
                             </button>
                             <button 
                               onClick={async () => {
-                                if(await confirm("هل أنت متأكد؟")) handleDelete(order.id);
+                                const confirmed = await confirm({
+                                  title: "حذف الطلب",
+                                  message: `هل أنت متأكد من حذف الطلب رقم ${order.id}؟ هذا الإجراء سيقوم بإزالة بيانات الطلب نهائياً.`,
+                                  confirmText: "نعم، حذف الطلب",
+                                  cancelText: "إلغاء",
+                                  type: "danger"
+                                });
+                                if (confirmed) handleDelete(order.id);
                               }}
                               className="p-2 hover:bg-red-500/10 rounded-lg text-gray-400 hover:text-red-500 transition-all"
                             >

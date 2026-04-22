@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-[85vh] lg:min-h-[90vh] flex flex-col items-center justify-center pt-40 md:pt-48 pb-20 overflow-hidden text-center">
       {/* Radial Glow Background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-amber-500/5 blur-[120px] lg:blur-[150px] rounded-full -z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-amber-500/5 blur-[80px] lg:blur-[150px] rounded-full -z-0" />
       
       <div className="container mx-auto px-4 relative z-10 flex flex-col items-center">
         <motion.div
@@ -26,7 +26,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-4xl md:text-6xl lg:text-8xl font-black leading-[1.1] mb-6 lg:mb-8 max-w-5xl tracking-tight"
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black leading-[1.2] lg:leading-[1.1] mb-6 lg:mb-8 max-w-5xl tracking-tight"
         >
           اجعل خيالك <span className="text-gradient">واقعاً</span> <br className="hidden sm:block" /> 
           بدقة الليزر
@@ -36,7 +36,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-gray-400 text-sm md:text-xl lg:text-2xl max-w-2xl mb-10 lg:mb-12 leading-relaxed"
+          className="text-gray-400 text-sm sm:text-lg md:text-xl lg:text-2xl max-w-2xl mb-10 lg:mb-12 leading-relaxed"
         >
           متخصصون في تحويل التصميمات الهندسية المعقدة إلى قطع فنية خشبية فريدة تضفي لمسة من الفخامة والجمال على مساحتك الخاصة.
         </motion.p>
@@ -64,9 +64,9 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Decorative Blur Orbs */}
-      <div className="absolute -top-20 -right-20 w-64 lg:w-96 h-64 lg:h-96 bg-amber-500/10 blur-[80px] lg:blur-[100px] rounded-full opacity-50" />
-      <div className="absolute -bottom-20 -left-20 w-64 lg:w-96 h-64 lg:h-96 bg-blue-500/10 blur-[80px] lg:blur-[100px] rounded-full opacity-30" />
+      {/* Decorative Orbs - Optimized for mobile performance */}
+      <div className="absolute -top-20 -right-20 w-64 lg:w-96 h-64 lg:h-96 bg-amber-500/5 blur-[60px] lg:blur-[100px] rounded-full" />
+      <div className="absolute -bottom-20 -left-20 w-64 lg:w-96 h-64 lg:h-96 bg-blue-500/5 blur-[60px] lg:blur-[100px] rounded-full" />
     </section>
   );
 }

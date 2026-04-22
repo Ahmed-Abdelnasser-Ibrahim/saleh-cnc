@@ -73,7 +73,7 @@ export default function AboutPage() {
       {/* Features Grid */}
       <section className="py-24">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {features.map((feature, i) => (
               <motion.div
                 key={feature.title}
@@ -81,13 +81,13 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-10 rounded-[32px] bg-white/5 border border-white/5 hover:border-amber-500/20 transition-all text-center group"
+                className="p-6 sm:p-10 rounded-2xl sm:rounded-[32px] bg-white/5 border border-white/5 hover:border-amber-500/20 transition-all text-center group"
               >
-                <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
-                  <feature.icon size={32} />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-amber-500/10 text-amber-500 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-8 group-hover:scale-110 transition-transform">
+                  <feature.icon size={24} className="sm:w-8 sm:h-8" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">{feature.desc}</p>
+                <h3 className="text-base sm:text-xl font-bold mb-2 sm:mb-4">{feature.title}</h3>
+                <p className="text-gray-400 leading-relaxed text-[10px] sm:text-sm">{feature.desc}</p>
               </motion.div>
             ))}
           </div>

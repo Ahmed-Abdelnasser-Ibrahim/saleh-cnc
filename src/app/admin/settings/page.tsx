@@ -30,7 +30,9 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/settings");
+      const res = await fetch("/api/settings", {
+        headers: { "x-admin-auth": "true" }
+      });
       const data = await res.json();
       if (data) setSettings(data);
     } catch {
@@ -52,7 +54,10 @@ export default function AdminSettingsPage() {
     try {
       const res = await fetch("/api/settings", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-admin-auth": "true"
+        },
         body: JSON.stringify(settings),
       });
       if (res.ok) {
@@ -72,7 +77,7 @@ export default function AdminSettingsPage() {
     <div className="flex min-h-screen bg-[#050505]">
       <AdminSidebar />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-8">
         <header className="mb-10">
           <h1 className="text-3xl font-bold mb-2 text-white">إعدادات الموقع</h1>
           <p className="text-gray-400">تحكم في المعلومات الأساسية وروابط التواصل للمتجر.</p>
@@ -81,7 +86,7 @@ export default function AdminSettingsPage() {
         <div className="max-w-4xl">
           <form onSubmit={handleSave} className="space-y-8">
             {/* General Settings */}
-            <div className="bg-slate-900 rounded-[32px] border border-white/5 p-8 shadow-xl">
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Globe size={20} className="text-amber-500" />
                 المعلومات الأساسية
@@ -109,7 +114,7 @@ export default function AdminSettingsPage() {
             </div>
 
             {/* Contact Settings */}
-            <div className="bg-slate-900 rounded-[32px] border border-white/5 p-8 shadow-xl">
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <MessageSquare size={20} className="text-amber-500" />
                 روابط التواصل

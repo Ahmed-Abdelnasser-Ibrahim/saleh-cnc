@@ -3,7 +3,8 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import { ToastProvider } from "@/lib/toast-context";
-import FloatingWhatsApp from "@/components/UI/FloatingWhatsApp";
+import { WishlistProvider } from "@/lib/wishlist-context";
+
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -65,18 +66,24 @@ export const metadata: Metadata = {
   },
 };
 
+import dynamic from "next/dynamic";
+
+const FloatingWhatsApp = dynamic(() => import("@/components/UI/FloatingWhatsApp"));
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${cairo.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-cairo bg-[#0a0a0a] text-white">
+    <html lang="ar" dir="rtl" className={`${cairo.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-cairo bg-[#0a0a0a] text-white" suppressHydrationWarning>
         <ToastProvider>
           <CartProvider>
-            {children}
-            <FloatingWhatsApp />
+            <WishlistProvider>
+              {children}
+              <FloatingWhatsApp />
+            </WishlistProvider>
           </CartProvider>
         </ToastProvider>
       </body>

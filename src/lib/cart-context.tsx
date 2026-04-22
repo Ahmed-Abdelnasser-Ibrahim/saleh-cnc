@@ -28,10 +28,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const savedCart = localStorage.getItem("cart");
       if (savedCart) {
-        setCart(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        requestAnimationFrame(() => {
+          setCart(parsed);
+        });
       }
     } finally {
-      setIsInitialized(true);
+      requestAnimationFrame(() => {
+        setIsInitialized(true);
+      });
     }
   }, []);
 

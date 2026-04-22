@@ -1,25 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useState, memo } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/data";
-import { ShoppingCart, Heart, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Heart, ChevronDown, ChevronUp } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
-import { motion } from "framer-motion";
+import { useWishlist } from "@/lib/wishlist-context";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard = memo(({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [showDescription, setShowDescription] = useState(false);
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="group bg-[#111111] rounded-3xl overflow-hidden border border-white/[0.05] hover:border-amber-500/20 transition-all duration-500 hover:-translate-y-2 shadow-xl hover:shadow-2xl hover:shadow-amber-500/5 flex flex-col h-full"
+      viewport={{ once: true, margin: "50px" }}
+      transition={{ duration: 0.4 }}
+      className="group bg-[#111111] rounded-xl sm:rounded-3xl overflow-hidden border border-white/[0.05] hover:border-amber-500/20 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-2xl hover:shadow-amber-500/5 flex flex-col h-full"
     >
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-[#1a1a1a]">
@@ -27,24 +40,32 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
         />
         
         {/* Wishlist Button */}
-
-        <button className="absolute top-4 right-4 p-2.5 bg-black/50 backdrop-blur-md rounded-2xl text-white hover:text-amber-500 hover:bg-black/70 transition-all transform hover:scale-110 border border-white/10">
-          <Heart size={20} />
+        <button 
+          onClick={handleToggleWishlist}
+          className={`absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl transition-all transform hover:scale-110 border border-white/10 z-10 ${
+            isInWishlist(product.id) 
+              ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" 
+              : "bg-black/50 text-white hover:text-amber-500 hover:bg-black/70"
+          }`}
+        >
+          <Heart size={14} className={`sm:w-5 sm:h-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} />
         </button>
 
         {/* Badge */}
         {product.badge && (
-          <div className="absolute top-4 left-4 bg-amber-500 text-black text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-lg shadow-amber-500/20">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-amber-500 text-black text-[8px] sm:text-[11px] font-bold px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-xl shadow-lg shadow-amber-500/20">
             {product.badge}
           </div>
         )}
 
-        {/* Hover Overlay Button */}
-        <div className="absolute inset-x-4 bottom-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+        {/* Desktop Hover Overlay Button */}
+        <div className="hidden lg:block absolute inset-x-4 bottom-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -59,23 +80,55 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Content Area */}
-      <div className="p-6 flex flex-col flex-1">
-        <span className="text-amber-500 text-[11px] font-bold uppercase tracking-wider mb-2 block">
+      <div className="p-3 sm:p-6 flex flex-col flex-1">
+        <span className="text-amber-500 text-[8px] sm:text-[11px] font-bold uppercase tracking-wider mb-1 sm:mb-2 block">
           {product.category}
         </span>
-        <h3 className="text-lg font-bold text-white mb-4 line-clamp-1 group-hover:text-amber-500 transition-colors">
+        <h3 className="text-[11px] sm:text-lg font-bold text-white mb-2 sm:mb-4 line-clamp-1 group-hover:text-amber-500 transition-colors">
           {product.name}
         </h3>
         
-        <div className="mt-auto flex items-center justify-between">
-          <div className="text-2xl font-bold text-amber-500">
-            {product.price} <span className="text-sm font-normal text-gray-500 mr-1">ج.م</span>
+        <AnimatePresence>
+          {showDescription && (
+            <motion.p
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="text-gray-400 text-[10px] sm:text-sm mb-4 overflow-hidden"
+            >
+              {product.description || "لا يوجد وصف حالياً."}
+            </motion.p>
+          )}
+        </AnimatePresence>
+        
+        <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2">
+          <div className="text-[14px] sm:text-2xl font-bold text-amber-500 whitespace-nowrap">
+            {product.price} <span className="text-[9px] sm:text-sm font-normal text-gray-500 mr-0.5">ج.م</span>
           </div>
-          <button className="text-gray-500 hover:text-white transition-colors">
-            <ArrowLeft size={18} />
-          </button>
+          
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                addToCart(product);
+              }}
+              className="lg:hidden p-2 sm:p-2.5 bg-amber-500 text-black rounded-lg sm:rounded-xl hover:bg-amber-600 transition-all active:scale-90"
+            >
+              <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
+            </button>
+
+            <button 
+              onClick={() => setShowDescription(!showDescription)}
+              className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl transition-all ${showDescription ? "bg-white/10 text-amber-500" : "text-gray-500 hover:text-white hover:bg-white/5 border border-white/5"}`}
+            >
+              {showDescription ? <ChevronUp size={16} className="sm:w-5 sm:h-5" /> : <ChevronDown size={16} className="sm:w-5 sm:h-5" />}
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>
   );
-}
+});
+
+ProductCard.displayName = "ProductCard";
+export default ProductCard;

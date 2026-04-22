@@ -13,7 +13,9 @@ export function useAdminAuth() {
       if (auth !== "true") {
         router.replace("/login");
       } else {
-        setIsLoading(false);
+        requestAnimationFrame(() => {
+          setIsLoading(false);
+        });
       }
     };
     

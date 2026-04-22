@@ -12,7 +12,7 @@ import Image from "next/image";
 
 export default function AdminProductsPage() {
   const { isLoading: authLoading } = useAdminAuth();
-  const { showToast } = useToast();
+  const { showToast, confirm } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,12 +24,15 @@ export default function AdminProductsPage() {
     price: 0,
     category: "ديكور",
     image: "/images/p-1.jpg",
-    badge: ""
+    badge: "",
+    description: ""
   });
 
   const fetchProducts = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products", {
+        headers: { "x-admin-auth": "true" }
+      });
       const data = await res.json();
       setProducts(data || []);
     } catch {
@@ -47,7 +50,7 @@ export default function AdminProductsPage() {
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData({ name: "", price: 0, category: "ديكور", image: "/images/p-1.jpg", badge: "" });
+    setFormData({ name: "", price: 0, category: "ديكور", image: "/images/p-1.jpg", badge: "", description: "" });
     setIsModalOpen(true);
   };
 
@@ -58,7 +61,8 @@ export default function AdminProductsPage() {
       price: product.price,
       category: product.category,
       image: product.image,
-      badge: product.badge || ""
+      badge: product.badge || "",
+      description: product.description || ""
     });
     setIsModalOpen(true);
   };
@@ -81,14 +85,20 @@ export default function AdminProductsPage() {
       if (editingProduct) {
         const res = await fetch("/api/products", {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-admin-auth": "true"
+          },
           body: JSON.stringify({ ...formData, id: editingProduct.id }),
         });
         if (res.ok) showToast("تم تحديث المنتج بنجاح", "success");
       } else {
         const res = await fetch("/api/products", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-admin-auth": "true"
+          },
           body: JSON.stringify({ ...formData, id: Date.now() }),
         });
         if (res.ok) showToast("تم إضافة المنتج بنجاح", "success");
@@ -104,7 +114,10 @@ export default function AdminProductsPage() {
     try {
       const res = await fetch("/api/products", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-admin-auth": "true"
+        },
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
@@ -128,7 +141,7 @@ export default function AdminProductsPage() {
     <div className="flex min-h-screen bg-[#050505]">
       <AdminSidebar />
       
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div>
             <h1 className="text-3xl font-bold mb-2 text-white">إدارة المنتجات</h1>
@@ -208,7 +221,14 @@ export default function AdminProductsPage() {
                             </button>
                             <button
                               onClick={async () => {
-                                if (await confirm("هل أنت متأكد من الحذف؟")) handleDelete(p.id);
+                                const confirmed = await confirm({
+                                  title: "حذف المنتج",
+                                  message: `هل أنت متأكد من حذف المنتج "${p.name}"؟ لا يمكن التراجع عن هذا الإجراء.`,
+                                  confirmText: "نعم، حذف المنتج",
+                                  cancelText: "إلغاء",
+                                  type: "danger"
+                                });
+                                if (confirmed) handleDelete(p.id);
                               }}
                               className="p-2 hover:bg-red-500/10 rounded-lg text-gray-400 hover:text-red-500 transition-all"
                             >
@@ -246,7 +266,7 @@ export default function AdminProductsPage() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative bg-slate-900 border border-white/10 rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl"
+                className="relative bg-slate-900 border border-white/10 rounded-[32px] w-full max-w-lg overflow-y-auto max-h-[90vh] shadow-2xl no-scrollbar"
               >
                 <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                   <h2 className="text-2xl font-bold">{editingProduct ? "تعديل المنتج" : "إضافة منتج جديد"}</h2>
@@ -264,6 +284,17 @@ export default function AdminProductsPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-400">وصف المنتج</label>
+                    <textarea 
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      rows={3}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-amber-500 resize-none"
+                      placeholder="أدخل وصف المنتج هنا..."
                     />
                   </div>
 

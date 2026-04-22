@@ -18,7 +18,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-950 border-t border-white/5 pt-16 lg:pt-20 pb-10">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16 text-center md:text-right">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16 text-center sm:text-right">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
             <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-1 mb-6">

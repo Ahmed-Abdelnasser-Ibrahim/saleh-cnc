@@ -9,9 +9,11 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/lib/toast-context";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, totalPrice, totalItems } = useCart();
+  const { confirm } = useToast();
   const router = useRouter();
 
   const handleCheckout = () => {
@@ -71,7 +73,16 @@ export default function CartPage() {
                     </div>
 
                     <button 
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={async () => {
+                        const confirmed = await confirm({
+                          title: "حذف من السلة",
+                          message: `هل أنت متأكد من حذف "${item.name}" من سلة التسوق؟`,
+                          confirmText: "نعم، حذف",
+                          cancelText: "تراجع",
+                          type: "danger"
+                        });
+                        if (confirmed) removeFromCart(item.id);
+                      }}
                       className="p-2 text-gray-500 hover:text-red-500 transition-colors"
                     >
                       <Trash2 size={22} />
