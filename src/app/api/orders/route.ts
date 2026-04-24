@@ -42,11 +42,13 @@ export async function POST(request: Request) {
     }
 
     const orderData = validation.data;
-    const status = orderData.paymentMethod === "cod" ? "pending" : "pending_confirmation";
+    const status = orderData.paymentMethod === "cash_on_delivery" ? "pending" : "pending_payment_confirmation";
+    const paymentStatus = orderData.paymentMethod === "cash_on_delivery" ? "not_required" : "pending_confirmation";
     
     const newOrder = await OrderModel.create({
       ...orderData,
-      status: status
+      status: status,
+      paymentStatus: paymentStatus
     });
     
     return NextResponse.json({ 
@@ -61,7 +63,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function PUT(request: Request) {
   if (!isAdmin(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
