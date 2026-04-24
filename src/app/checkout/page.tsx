@@ -197,19 +197,19 @@ export default function CheckoutPage() {
               <div className="grid gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2"><User size={16} className="text-amber-500" /> الاسم بالكامل</label>
-                  <input required type="text" value={formData.customer} onChange={(e) => handleInputChange('customer', e.target.value)} placeholder="الاسم الثلاثي أو الرباعي" className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-white font-bold ${errors.customer ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} />
+                  <input required type="text" value={formData.customer} onChange={(e) => handleInputChange('customer', e.target.value)} placeholder="أدخل اسمك" className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-white font-bold ${errors.customer ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} />
                   {errors.customer && <p className="text-red-500 text-xs mt-1 flex items-center gap-1 pr-2"><AlertTriangle size={12} /> {errors.customer}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2"><Phone size={16} className="text-amber-500" /> رقم الهاتف (واتساب)</label>
-                  <input required type="tel" value={formData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="01xxxxxxxxx" className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-left text-white font-bold tracking-widest ${errors.phone ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} dir="ltr" />
+                  <input required type="tel" value={formData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="رقم الموبايل" className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-left text-white font-bold tracking-widest ${errors.phone ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} dir="ltr" />
                   {errors.phone && <p className="text-red-500 text-xs mt-1 flex items-center gap-1 pr-2"><AlertTriangle size={12} /> {errors.phone}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2"><MapPin size={16} className="text-amber-500" /> العنوان بالتفصيل</label>
-                  <input required type="text" value={formData.address} onChange={(e) => handleInputChange('address', e.target.value)} placeholder="الشارع، المنطقة، رقم المنزل..." className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-white font-bold ${errors.address ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} />
+                  <input required type="text" value={formData.address} onChange={(e) => handleInputChange('address', e.target.value)} placeholder="أدخل العنوان بالتفصيل" className={`w-full bg-white/5 border rounded-2xl py-4 px-6 outline-none transition-all text-white font-bold ${errors.address ? 'border-red-500/50' : 'border-white/10 focus:border-amber-500'}`} />
                   {errors.address && <p className="text-red-500 text-xs mt-1 flex items-center gap-1 pr-2"><AlertTriangle size={12} /> {errors.address}</p>}
                 </div>
 
