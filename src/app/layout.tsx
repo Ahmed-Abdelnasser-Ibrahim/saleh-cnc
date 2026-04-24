@@ -73,6 +73,9 @@ export const metadata: Metadata = {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
+  verification: {
+    google: "k2kse5ivOi3itDEo8bSkaO4HiYTb-PsyqAqhaibtACc",
+  },
 };
 
 import dynamic from "next/dynamic";
