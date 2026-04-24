@@ -79,8 +79,8 @@ export default function ContactSection() {
                 نحن لا نبيع المنتجات الجاهزة فقط، بل نحول أفكارك وتصميماتك الخاصة إلى حقيقة بدقة متناهية. تواصل معنا لمناقشة مشروعك القادم.
               </p>
               <button 
-                onClick={() => window.open("https://wa.me/201068256479?text=أهلاً صالح CNC، أريد الاستفسار عن طلب تصميم خاص", "_blank")}
-                className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 md:py-4 px-8 md:px-10 rounded-xl md:rounded-2xl transition-all shadow-xl shadow-amber-500/20 text-sm md:text-base"
+                onClick={() => window.location.href = "/custom-order"}
+                className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-black font-black py-3 md:py-4 px-8 md:px-10 rounded-xl md:rounded-2xl transition-all shadow-xl shadow-amber-500/20 text-sm md:text-base"
               >
                 طلب تصميم خاص
               </button>

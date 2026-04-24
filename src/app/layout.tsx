@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import { ToastProvider } from "@/lib/toast-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
+import StructuredData from "@/components/SEO/StructuredData";
 
 
 const cairo = Cairo({
@@ -14,11 +15,15 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: {
-    default: "صالح CNC | أرقى تصميمات ماكينات الليزر والأخشاب",
+    default: "صالح CNC | ليزر CNC ونجارة الأخشاب - تصنيع وتصميمات مبتكرة",
     template: "%s | صالح CNC"
   },
-  description: "اكتشف عالم الإبداع مع صالح CNC. نوفر لك أرقى وأجمل تصميمات ماكينات الليزر والأخشاب، ديكورات منزلية، ساعات حائط، وهدايا خشبية متميزة بجودة استثنائية وأسعار تنافسية.",
-  keywords: ["CNC", "ليزر", "أخشاب", "تصميمات خشبية", "ديكورات", "ساعات حائط", "هدايا", "حفر ليزر", "مصر", "تصميم داخلي"],
+  description: "صالح CNC هو وجهتك الأولى لأعمال ليزر CNC ونجارة الأخشاب في مصر. نقدم خدمات حفر ليزر، تصميمات CNC خشب، ديكورات منزلية، وهدايا خشبية مخصصة بأعلى جودة.",
+  keywords: [
+    "ليزر CNC", "CNC خشب", "نجارة CNC", "ورشة CNC", "حفر ليزر مصر", 
+    "تصميمات CNC", "ديكورات خشبية ليزر", "ساعات حائط خشب", "هدايا خشبية مخصصة",
+    "ماكينات CNC", "أعمال خشبية فنية", "تصميمات ليزر جاهزة", "صالح CNC"
+  ],
   authors: [{ name: "Saleh CNC" }],
   creator: "Saleh CNC",
   publisher: "Saleh CNC",
@@ -32,8 +37,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "صالح CNC | أرقى تصميمات ماكينات الليزر والأخشاب",
-    description: "اكتشف عالم الإبداع مع صالح CNC. نوفر لك أرقى وأجمل تصميمات ماكينات الليزر والأخشاب بجودة استثنائية.",
+    title: "صالح CNC | أفضل أعمال ليزر CNC ونجارة الأخشاب في مصر",
+    description: "اكتشف إبداع صالح CNC في تصميمات الخشب والليزر. خدمات احترافية، جودة عالمية، وأسعار تنافسية لكل احتياجات الديكور والهدايا.",
     url: "https://saleh-cnc.com",
     siteName: "صالح CNC",
     images: [
@@ -41,7 +46,7 @@ export const metadata: Metadata = {
         url: "/images/hero-cnc.jpg",
         width: 1200,
         height: 630,
-        alt: "صالح CNC - تصميمات خشبية متقنة",
+        alt: "صالح CNC - رواد أعمال الليزر والخشب",
       },
     ],
     locale: "ar_EG",
@@ -49,8 +54,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "صالح CNC | أرقى تصميمات ماكينات الليزر والأخشاب",
-    description: "اكتشف عالم الإبداع مع صالح CNC. نوفر لك أرقى وأجمل تصميمات ماكينات الليزر والأخشاب بجودة استثنائية.",
+    title: "صالح CNC | ليزر CNC ونجارة الأخشاب",
+    description: "نحول الخشب إلى تحف فنية بدقة ماكينات CNC والليزر. اطلب تصميمك الخاص الآن.",
     images: ["/images/hero-cnc.jpg"],
   },
   robots: {
@@ -85,6 +90,25 @@ export default function RootLayout({
         <ToastProvider>
           <CartProvider>
             <WishlistProvider>
+              <StructuredData 
+                type="Organization" 
+                data={{
+                  name: "صالح CNC",
+                  url: "https://saleh-cnc.com",
+                  logo: "https://saleh-cnc.com/images/logos/logo-v4.jpg",
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    "telephone": "+201068256479",
+                    "contactType": "customer service",
+                    "areaServed": "EG",
+                    "availableLanguage": "Arabic"
+                  },
+                  sameAs: [
+                    "https://facebook.com/salehcnc",
+                    "https://instagram.com/salehcnc"
+                  ]
+                }} 
+              />
               {children}
               <FloatingWhatsApp />
             </WishlistProvider>

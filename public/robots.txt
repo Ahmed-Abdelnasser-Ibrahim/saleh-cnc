@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /login
+
+# Host
+Host: https://saleh-cnc.com
+
+# Sitemaps
+Sitemap: https://saleh-cnc.com/sitemap.xml

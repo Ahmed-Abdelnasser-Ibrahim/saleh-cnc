@@ -7,6 +7,7 @@ import { ShoppingCart, Heart, ChevronDown, ChevronUp } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { motion, AnimatePresence } from "framer-motion";
+import StructuredData from "@/components/SEO/StructuredData";
 
 interface ProductCardProps {
   product: Product;
@@ -35,6 +36,20 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
       transition={{ duration: 0.4 }}
       className="group bg-[#111111] rounded-xl sm:rounded-3xl overflow-hidden border border-white/[0.05] hover:border-amber-500/20 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-2xl hover:shadow-amber-500/5 flex flex-col h-full will-change-transform"
     >
+      <StructuredData 
+        type="Product" 
+        data={{
+          name: product.name,
+          image: `https://saleh-cnc.com${product.image}`,
+          description: product.description || `تصميم ${product.category} فريد من صالح CNC`,
+          offers: {
+            "@type": "Offer",
+            "price": product.price,
+            "priceCurrency": "EGP",
+            "availability": "https://schema.org/InStock"
+          }
+        }} 
+      />
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-[#1a1a1a]">
         <Image

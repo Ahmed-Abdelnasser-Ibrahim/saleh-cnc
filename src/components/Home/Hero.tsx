@@ -19,8 +19,8 @@ export default function Hero() {
 
         <Reveal delay={0.2}>
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-black leading-[1.2] lg:leading-[1.1] mb-6 lg:mb-8 max-w-5xl tracking-tight">
-            اجعل خيالك <span className="text-gradient">واقعاً</span> <br className="hidden sm:block" /> 
-            بدقة الليزر
+            أفضل أعمال <span className="text-gradient">ليزر CNC</span> <br className="hidden sm:block" /> 
+            وتصميمات الخشب
           </h1>
         </Reveal>
 
