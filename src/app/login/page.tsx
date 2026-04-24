@@ -6,6 +6,7 @@ import { Lock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useToast } from "@/lib/toast-context";
+import { loginSchema } from "@/lib/validations";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -15,6 +16,13 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const validation = loginSchema.safeParse({ username, password });
+    if (!validation.success) {
+      showToast(validation.error.issues[0].message, "error");
+      return;
+    }
+
     if (username === "admin" && password === "admin123") {
       localStorage.setItem("isAdmin", "true");
       showToast("تم تسجيل الدخول بنجاح", "success");

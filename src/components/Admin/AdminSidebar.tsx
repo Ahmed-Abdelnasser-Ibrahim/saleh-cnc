@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Box, ShoppingBag, Settings, LogOut, Home, Menu, X } from "lucide-react";
+import Image from "next/image";
 import { useToast } from "@/lib/toast-context";
 
 export default function AdminSidebar() {
@@ -43,9 +44,20 @@ export default function AdminSidebar() {
         ${isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}
       `}>
         <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-amber-500">لوحة</span>
-            <span className="text-xl font-bold text-white">التحكم</span>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-lg shadow-amber-500/5 bg-black">
+              <Image
+                src="/images/logos/logo-v4.jpg"
+                alt="Saleh CNC Logo"
+                width={48}
+                height={48}
+                className="object-cover scale-110"
+              />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="text-sm font-bold text-amber-500">لوحة</span>
+              <span className="text-sm font-bold text-white">التحكم</span>
+            </div>
           </div>
           <button 
             onClick={() => setIsOpen(false)}

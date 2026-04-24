@@ -10,9 +10,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-const ProductCard = memo(({ product }: ProductCardProps) => {
+const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [showDescription, setShowDescription] = useState(false);
@@ -32,7 +33,7 @@ const ProductCard = memo(({ product }: ProductCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "50px" }}
       transition={{ duration: 0.4 }}
-      className="group bg-[#111111] rounded-xl sm:rounded-3xl overflow-hidden border border-white/[0.05] hover:border-amber-500/20 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-2xl hover:shadow-amber-500/5 flex flex-col h-full"
+      className="group bg-[#111111] rounded-xl sm:rounded-3xl overflow-hidden border border-white/[0.05] hover:border-amber-500/20 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-2xl hover:shadow-amber-500/5 flex flex-col h-full will-change-transform"
     >
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-[#1a1a1a]">
@@ -42,7 +43,8 @@ const ProductCard = memo(({ product }: ProductCardProps) => {
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover transition-transform duration-500 group-hover:scale-110"
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          priority={priority}
         />
         
         {/* Wishlist Button */}

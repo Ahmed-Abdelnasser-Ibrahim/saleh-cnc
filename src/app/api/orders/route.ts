@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getDb, saveDb } from "@/lib/db";
 import { Order } from "@/lib/data";
+import { orderSchema } from "@/lib/validations";
+import { sanitizeObject } from "@/lib/security";
 
 const isAdmin = (request: Request) => {
   return request.headers.get("x-admin-auth") === "true";
@@ -14,48 +16,49 @@ export async function GET(request: Request) {
   try {
     const db = getDb();
     return NextResponse.json(db.orders || []);
-  } catch (error) {
-    console.error("API Error (GET /orders):", error);
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const order = await request.json();
-
-    // Strict Order Validation
-    if (!order.customer || order.customer.length < 3) {
-      return NextResponse.json({ error: "الاسم مطلوب (على الأقل 3 أحرف)" }, { status: 400 });
-    }
+    const body = await request.json();
     
-    const phoneRegex = /^01[0125][0-9]{8}$/;
-    if (!order.phone || !phoneRegex.test(order.phone)) {
-      return NextResponse.json({ error: "رقم الهاتف غير صحيح (يجب أن يكون رقم مصري صالح)" }, { status: 400 });
+    // 1. Sanitize all inputs
+    const sanitizedBody = sanitizeObject(body);
+    
+    // 2. Validate with Zod
+    const validation = orderSchema.safeParse(sanitizedBody);
+    
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: "Validation Failed", 
+        details: validation.error.flatten().fieldErrors 
+      }, { status: 400 });
     }
 
-    if (!order.address || order.address.length < 5) {
-      return NextResponse.json({ error: "العنوان مطلوب بالتفصيل" }, { status: 400 });
-    }
-
-    if (!order.items || !Array.isArray(order.items) || order.items.length === 0) {
-      return NextResponse.json({ error: "السلة فارغة، لا يمكن إتمام الطلب" }, { status: 400 });
-    }
-
+    const order = validation.data;
     const db = getDb();
+    
     const newOrder: Order = {
       ...order,
-      id: order.id || `ORD-${Date.now()}`,
+      id: `ORD-${Date.now().toString().slice(-6)}`,
       date: new Date().toISOString(),
-      status: order.status || "pending"
-    };
+      status: "pending"
+    } as Order;
 
     db.orders = [newOrder, ...(db.orders || [])];
     saveDb(db);
-    return NextResponse.json(newOrder, { status: 201 });
-  } catch (error) {
-    console.error("API Error (POST /orders):", error);
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: "Order created successfully",
+      orderId: newOrder.id 
+    }, { status: 201 });
+
+  } catch {
+    return NextResponse.json({ error: "Failed to process order" }, { status: 500 });
   }
 }
 

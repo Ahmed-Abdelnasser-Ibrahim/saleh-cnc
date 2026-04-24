@@ -1,13 +1,22 @@
 "use client";
 
 import React from "react";
-import { categories } from "@/lib/data";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function Categories() {
+interface Category {
+  id: number;
+  name: string;
+  image: string;
+}
+
+interface CategoriesProps {
+  categories: Category[];
+}
+
+export default function Categories({ categories }: CategoriesProps) {
   return (
     <section className="py-12 md:py-16 lg:py-24 bg-[#0a0a0a]">
       <div className="container mx-auto px-4 max-w-7xl">

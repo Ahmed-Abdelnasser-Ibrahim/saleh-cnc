@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, ShoppingCart, User, Menu, X, Heart } from "lucide-react";
+import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { motion, AnimatePresence } from "framer-motion";
@@ -59,9 +60,30 @@ export default function Navbar() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="text-xl sm:text-2xl font-black tracking-tighter flex items-center group">
-              <span className="text-amber-500">SALEH</span>
-              <span className="text-white">CNC</span>
+            <Link href="/" className="flex items-center group relative">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 transition-transform duration-500 group-hover:scale-105 will-change-transform">
+                {/* Golden Glow Effect - Optimized opacity for performance */}
+                <div className="absolute inset-0 bg-amber-500/10 blur-xl rounded-full scale-125 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                
+                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:border-amber-500 transition-colors shadow-2xl bg-black">
+                  <Image
+                    src="/images/logos/logo-v4.jpg"
+                    alt="Saleh CNC Logo"
+                    fill
+                    sizes="(max-width: 640px) 48px, 64px"
+                    className="object-cover scale-110"
+                    priority
+                  />
+                </div>
+              </div>
+              <div className="mr-3 flex flex-col">
+                <span className="text-xl sm:text-2xl font-black tracking-tighter text-white group-hover:text-amber-500 transition-colors leading-none">
+                  SALEH<span className="text-amber-500 group-hover:text-white">CNC</span>
+                </span>
+                <span className="text-[10px] text-amber-500/70 font-bold tracking-[0.2em] mt-1 hidden sm:block uppercase">
+                  Precision Engineering
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Links */}
@@ -171,7 +193,17 @@ export default function Navbar() {
                 className="fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-slate-950 z-[70] p-8 shadow-2xl flex flex-col"
               >
                 <div className="flex justify-between items-center mb-12">
-                  <span className="text-2xl font-black text-amber-500">SALEH CNC</span>
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/30 bg-black">
+                      <Image
+                        src="/images/logos/logo-v4.jpg"
+                        alt="Saleh CNC Logo"
+                        width={48}
+                        height={48}
+                        sizes="48px"
+                        className="object-cover scale-110"
+                      />
+                    </div>
+                    <span className="text-2xl font-black text-amber-500">SALEH CNC</span>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-full text-white">
                     <X size={24} />
                   </button>

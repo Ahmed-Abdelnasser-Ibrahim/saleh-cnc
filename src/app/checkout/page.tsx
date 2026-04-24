@@ -9,6 +9,7 @@ import { ArrowLeft, CheckCircle2, Ticket, MapPin, Phone, User, ShoppingBag } fro
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/toast-context";
+import { orderSchema } from "@/lib/validations";
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart } = useCart();
@@ -41,43 +42,26 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    // Frontend Validation
-    if (formData.name.trim().length < 3) {
-      showToast("يرجى إدخال الاسم بالكامل (3 أحرف على الأقل)", "error");
+    // Strict Validation with Zod
+    const validation = orderSchema.safeParse({
+      ...formData,
+      items: cart,
+      total: finalPrice
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.issues[0];
+      showToast(firstError.message, "error");
       return;
     }
 
-    const phoneRegex = /^01[0125][0-9]{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      showToast("رقم الهاتف غير صحيح. يجب أن يكون رقم مصري صالح (مثال: 0106*******)", "error");
-      return;
-    }
-
-    if (formData.address.trim().length < 5) {
-      showToast("يرجى إدخال العنوان بالتفصيل", "error");
-      return;
-    }
-    
     setIsSubmitting(true);
     
-    const orderData = {
-      id: `ORD-${Date.now().toString().slice(-4)}`,
-      customer: formData.name,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      items: cart,
-      total: finalPrice,
-      status: "pending",
-      date: new Date().toISOString().split('T')[0]
-    };
-
     try {
-      // Save to real database
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(validation.data),
       });
 
       const data = await res.json();
@@ -86,11 +70,12 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Failed to save order");
       }
 
+      // Format WhatsApp message
       const message = `طلب جديد من متجر صالح CNC 🚀\n\n` +
-        `👤 العميل: ${formData.name}\n` +
-        `📞 الهاتف: ${formData.phone}\n` +
-        `📍 العنوان: ${formData.address}, ${formData.city}\n` +
-        `📝 ملاحظات: ${formData.notes || "لا يوجد"}\n\n` +
+        `👤 العميل: ${validation.data.customer}\n` +
+        `📞 الهاتف: ${validation.data.phone}\n` +
+        `📍 العنوان: ${validation.data.address}, ${validation.data.city}\n` +
+        `📝 ملاحظات: ${validation.data.notes || "لا يوجد"}\n\n` +
         `🛒 المنتجات:\n` +
         cart.map(item => `- ${item.name} (x${item.quantity}) = ${item.price * item.quantity} ج.م`).join("\n") +
         `\n\n` +
@@ -105,8 +90,9 @@ export default function CheckoutPage() {
       clearCart();
       showToast("تم إرسال طلبك بنجاح ✅", "success");
       router.push("/");
-    } catch (err: any) {
-      showToast(err.message || "حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.", "error");
+    } catch (err) {
+      const error = err as Error;
+      showToast(error.message || "حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.", "error");
     } finally {
       setIsSubmitting(false);
     }

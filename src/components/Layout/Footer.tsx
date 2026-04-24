@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const FacebookIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
@@ -21,9 +22,19 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16 text-center sm:text-right">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-            <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-1 mb-6">
-              <span className="text-white">SALEH</span>
-              <span className="text-amber-500 underline decoration-2 underline-offset-4 decoration-white/20">CNC</span>
+            <Link href="/" className="flex items-center gap-3 mb-6 group">
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-amber-500/20 group-hover:border-amber-500 transition-colors shadow-xl bg-black">
+                <Image
+                  src="/images/logos/logo-v4.jpg"
+                  alt="Saleh CNC Logo"
+                  width={56}
+                  height={56}
+                  className="object-cover scale-110"
+                />
+              </div>
+              <span className="text-2xl font-black tracking-tighter text-white">
+                SALEH<span className="text-amber-500">CNC</span>
+              </span>
             </Link>
             <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base max-w-xs">
               وجهتك الأولى لأرقى التصميمات الخشبية المشغولة بدقة الليزر. نجمع بين الفن والتكنولوجيا لنقدم لك قطعاً فريدة.

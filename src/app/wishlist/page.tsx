@@ -4,7 +4,6 @@ import React from "react";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { useWishlist } from "@/lib/wishlist-context";
-import { useCart } from "@/lib/cart-context";
 import ProductCard from "@/components/Home/ProductCard";
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag, ArrowLeft } from "lucide-react";

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb, saveDb } from "@/lib/db";
-import { Settings } from "@/lib/data";
+import { settingsSchema } from "@/lib/validations";
+import { sanitizeObject } from "@/lib/security";
 
 const isAdmin = (request: Request) => {
   return request.headers.get("x-admin-auth") === "true";
@@ -10,9 +11,8 @@ export async function GET() {
   try {
     const db = getDb();
     return NextResponse.json(db.settings || {});
-  } catch (error) {
-    console.error("API Error (GET /settings):", error);
-    return NextResponse.json({ error: "Failed to fetch settings" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -22,18 +22,23 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const settings: Settings = await request.json();
-    
-    if (!settings || typeof settings !== 'object') {
-      return NextResponse.json({ error: "Invalid settings data" }, { status: 400 });
+    const body = await request.json();
+    const sanitizedBody = sanitizeObject(body);
+    const validation = settingsSchema.safeParse(sanitizedBody);
+
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: "Validation Failed", 
+        details: validation.error.flatten().fieldErrors 
+      }, { status: 400 });
     }
 
+    const settings = validation.data;
     const db = getDb();
     db.settings = { ...db.settings, ...settings };
     saveDb(db);
     return NextResponse.json(db.settings);
-  } catch (error) {
-    console.error("API Error (PUT /settings):", error);
+  } catch {
     return NextResponse.json({ error: "Failed to update settings" }, { status: 500 });
   }
 }

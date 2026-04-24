@@ -5,6 +5,7 @@ import AdminSidebar from "@/components/Admin/AdminSidebar";
 import { Save, Globe, Phone, Mail, MessageSquare } from "lucide-react";
 import { useToast } from "@/lib/toast-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { settingsSchema } from "@/lib/validations";
 
 const FacebookIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
@@ -50,6 +51,14 @@ export default function AdminSettingsPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    const validation = settingsSchema.safeParse(settings);
+    if (!validation.success) {
+      showToast(validation.error.issues[0].message, "error");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const res = await fetch("/api/settings", {
@@ -58,7 +67,7 @@ export default function AdminSettingsPage() {
           "Content-Type": "application/json",
           "x-admin-auth": "true"
         },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(validation.data),
       });
       if (res.ok) {
         showToast("تم حفظ الإعدادات بنجاح", "success");

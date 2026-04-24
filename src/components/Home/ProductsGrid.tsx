@@ -1,33 +1,16 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProductCard from "./ProductCard";
-import { products as initialProducts } from "@/lib/data";
-import { motion, AnimatePresence } from "framer-motion";
+import { Product } from "@/lib/data";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function ProductsGrid() {
-  const [products, setProducts] = useState(initialProducts);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface ProductsGridProps {
+  initialProducts: Product[];
+}
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        if (data && data.length > 0) {
-          setProducts(data.slice(0, 8)); // Show first 8 products on home
-        }
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
+export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
+  const [products] = useState(initialProducts);
 
   return (
     <section className="py-20 bg-[#050505]">
@@ -43,23 +26,13 @@ export default function ProductsGrid() {
           </Link>
         </div>
 
-        {isLoading && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white/5 rounded-3xl aspect-[3/4] animate-pulse" />
-            ))}
-          </div>
-        )}
-
-        {!isLoading && !error && (
-          <div 
-            className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8"
-          >
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        <div 
+          className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8"
+        >
+          {products.map((product, i) => (
+            <ProductCard key={product.id} product={product} priority={i < 4} />
+          ))}
+        </div>
       </div>
     </section>
   );

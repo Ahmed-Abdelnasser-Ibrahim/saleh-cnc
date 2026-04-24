@@ -7,6 +7,7 @@ import { Product } from "@/lib/data";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/lib/toast-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { productSchema } from "@/lib/validations";
 
 import Image from "next/image";
 
@@ -81,6 +82,14 @@ export default function AdminProductsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    const validation = productSchema.safeParse(formData);
+    if (!validation.success) {
+      showToast(validation.error.issues[0].message, "error");
+      return;
+    }
+
     try {
       if (editingProduct) {
         const res = await fetch("/api/products", {
@@ -89,7 +98,7 @@ export default function AdminProductsPage() {
             "Content-Type": "application/json",
             "x-admin-auth": "true"
           },
-          body: JSON.stringify({ ...formData, id: editingProduct.id }),
+          body: JSON.stringify({ ...validation.data, id: editingProduct.id }),
         });
         if (res.ok) showToast("تم تحديث المنتج بنجاح", "success");
       } else {
@@ -99,7 +108,7 @@ export default function AdminProductsPage() {
             "Content-Type": "application/json",
             "x-admin-auth": "true"
           },
-          body: JSON.stringify({ ...formData, id: Date.now() }),
+          body: JSON.stringify(validation.data),
         });
         if (res.ok) showToast("تم إضافة المنتج بنجاح", "success");
       }
