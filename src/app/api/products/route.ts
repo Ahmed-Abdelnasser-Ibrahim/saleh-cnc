@@ -64,20 +64,25 @@ export async function PUT(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
-    const sanitizedBody = sanitizeObject(body);
-    const validation = productSchema.safeParse(sanitizedBody);
-
     const productId = body.id || body._id;
-    if (!validation.success || !productId) {
-      return NextResponse.json({ 
-        error: "Validation Failed or Missing ID", 
-        details: validation.success ? null : validation.error.flatten().fieldErrors 
-      }, { status: 400 });
+
+    if (!productId) {
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
+
+    // Sanitize the update data
+    const updateData = sanitizeObject({
+      name: body.name,
+      price: Number(body.price),
+      category: body.category,
+      image: body.image,
+      badge: body.badge,
+      description: body.description
+    });
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       productId,
-      { ...validation.data, price: Number(validation.data.price) },
+      updateData,
       { new: true }
     );
     
