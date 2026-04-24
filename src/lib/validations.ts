@@ -8,7 +8,7 @@ export const orderSchema = z.object({
   phone: z.string().regex(phoneRegex, "رقم الهاتف يجب أن يكون رقم مصري صالح"),
   address: z.string().min(5, "العنوان يجب أن يكون 5 أحرف على الأقل").max(200, "العنوان طويل جداً"),
   city: z.enum(["القاهرة", "الجيزة", "الإسكندرية", "القليوبية"]),
-  notes: z.string().max(500, "الملاحظات طويلة جداً").optional().or(z.literal("")),
+  notes: z.string().max(500, "الملاحظات طويلة جداً").optional().default(""),
   items: z.array(z.object({
     id: z.union([z.string(), z.number()]),
     name: z.string(),
@@ -17,7 +17,7 @@ export const orderSchema = z.object({
   })).min(1, "السلة فارغة"),
   total: z.number().positive(),
   paymentMethod: z.enum(["cod", "vodafone", "instapay"]).default("cod"),
-  paymentProof: z.string().optional().or(z.literal("")),
+  paymentProof: z.string().optional().default(""),
 });
 
 export const productSchema = z.object({
