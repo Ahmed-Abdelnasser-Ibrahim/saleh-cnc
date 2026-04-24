@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   keywords: ["منتجات ليزر خشب", "حفر ليزر على الخشب", "تقطيع ليزر مصر", "هدايا خشب ليزر"],
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function LaserWoodProductsPage() {
   const db = await getDb();
   const products = db.products?.filter(p => p.category === "ساعات" || p.category === "هدايا") || [];

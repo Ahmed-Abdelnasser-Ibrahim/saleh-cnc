@@ -18,6 +18,7 @@ interface ProductsClientProps {
 }
 
 export default function ProductsClient({ initialProducts, categories }: ProductsClientProps) {
+  const products = initialProducts;
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
@@ -37,15 +38,15 @@ export default function ProductsClient({ initialProducts, categories }: Products
   };
 
   const filteredProducts = useMemo(() => {
-    return initialProducts
+    return products
       .filter(p => (activeCategory === "الكل" || p.category === activeCategory))
       .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
       .sort((a, b) => {
-        if (sortBy === "price-low") return a.price - b.price;
-        if (sortBy === "price-high") return b.price - a.price;
+        if (sortBy === "price-low") return (a.price || 0) - (b.price || 0);
+        if (sortBy === "price-high") return (b.price || 0) - (a.price || 0);
         return 0;
       });
-  }, [initialProducts, activeCategory, searchTerm, sortBy]);
+  }, [products, activeCategory, searchTerm, sortBy]);
 
   return (
     <div className="container mx-auto px-4 pt-32 pb-24">

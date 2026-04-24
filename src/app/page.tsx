@@ -10,6 +10,8 @@ import { categories as staticCategories } from "@/lib/data";
 
 export const revalidate = 3600; // Revalidate every hour
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const db = await getDb();
   const products = db.products?.slice(0, 8) || [];

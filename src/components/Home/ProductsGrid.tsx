@@ -10,7 +10,7 @@ interface ProductsGridProps {
 }
 
 export default function ProductsGrid({ initialProducts }: ProductsGridProps) {
-  const [products] = useState(initialProducts);
+  const products = initialProducts;
 
   return (
     <section className="py-20 bg-[#050505]">

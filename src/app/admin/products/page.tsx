@@ -130,11 +130,14 @@ export default function AdminProductsPage() {
         body: JSON.stringify({ id }),
       });
       if (res.ok) {
-        showToast("تم حذف المنتج", "info");
+        showToast("تم حذف المنتج بنجاح", "success");
         fetchProducts();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "فشل الحذف", "error");
       }
     } catch {
-      showToast("فشل الحذف", "error");
+      showToast("فشل الحذف - تأكد من اتصالك", "error");
     }
   };
 

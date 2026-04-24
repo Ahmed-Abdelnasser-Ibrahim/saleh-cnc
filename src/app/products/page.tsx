@@ -7,6 +7,8 @@ import { categories as staticCategories } from "@/lib/data";
 
 export const revalidate = 600; // Revalidate every 10 minutes
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductsPage() {
   const db = await getDb();
   const allProducts = db.products || [];

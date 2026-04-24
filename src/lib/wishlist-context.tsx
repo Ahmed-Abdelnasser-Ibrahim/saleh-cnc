@@ -15,25 +15,35 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const { showToast } = useToast();
 
+  // Initialize wishlist from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("wishlist");
-    if (saved) {
+    const initWishlist = () => {
       try {
-        const parsed = JSON.parse(saved);
-        setWishlist(parsed);
+        const saved = localStorage.getItem("wishlist");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setWishlist(parsed);
+        }
       } catch (e) {
         console.error("Failed to parse wishlist", e);
+      } finally {
+        setIsInitialized(true);
       }
-    }
+    };
+
+    // Use requestAnimationFrame to move state update out of synchronous effect body
+    requestAnimationFrame(initWishlist);
   }, []);
 
+  // Save to localStorage whenever wishlist changes, but only after initialization
   useEffect(() => {
-    if (wishlist.length > 0 || localStorage.getItem("wishlist")) {
+    if (isInitialized) {
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
     }
-  }, [wishlist]);
+  }, [wishlist, isInitialized]);
 
   const addToWishlist = (product: Product) => {
     if (!wishlist.find(item => item.id === product.id)) {
