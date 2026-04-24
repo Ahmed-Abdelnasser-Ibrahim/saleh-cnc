@@ -89,6 +89,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" className={`${cairo.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <meta name="google-site-verification" content="k2kse5ivOi3itDEo8bSkaO4HiYTb-PsyqAqhaibtACc" />
+      </head>
       <body className="min-h-full flex flex-col font-cairo bg-[#0a0a0a] text-white" suppressHydrationWarning>
         <ToastProvider>
           <CartProvider>
