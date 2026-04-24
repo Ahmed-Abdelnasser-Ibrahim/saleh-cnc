@@ -1,6 +1,8 @@
 "use client";
+// Admin Dashboard Payment Logic Update
 
 import React, { useState } from "react";
+// Final Payment System Update
 import Image from "next/image";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
