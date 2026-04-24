@@ -5,7 +5,7 @@ import Image from "next/image";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { useCart } from "@/lib/cart-context";
-import { ArrowLeft, CheckCircle2, Ticket, MapPin, Phone, User, ShoppingBag, Smartphone, CreditCard, Upload, X, Copy, Check, Info, ShieldCheck, AlertTriangle, MessageSquare, Home, ArrowRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Ticket, MapPin, Phone, User, ShoppingBag, Smartphone, CreditCard, Upload, X, Copy, Check, Info, ShieldCheck, AlertTriangle, MessageSquare, Home, ArrowRight, Clock, Package } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/toast-context";
