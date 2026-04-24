@@ -72,7 +72,7 @@ export interface Order {
   phone: string;
   items: OrderItem[];
   total: number;
-  status: "pending" | "completed" | "cancelled";
+  status: "pending" | "completed" | "cancelled" | "paid" | "pending_confirmation";
   date: string;
   address: string;
   city: string;
