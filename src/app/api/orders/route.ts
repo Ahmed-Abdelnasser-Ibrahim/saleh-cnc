@@ -15,8 +15,12 @@ export async function GET(request: Request) {
 
   try {
     await connectDB();
-    const orders = await OrderModel.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(orders);
+    const orders = await OrderModel.find({}).sort({ createdAt: -1 }).lean();
+    const formattedOrders = orders.map((o: any) => ({
+      ...o,
+      id: o._id.toString()
+    }));
+    return NextResponse.json(formattedOrders);
   } catch (error) {
     console.error("API Error (GET /orders):", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

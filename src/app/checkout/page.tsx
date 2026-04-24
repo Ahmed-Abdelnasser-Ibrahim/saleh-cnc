@@ -287,10 +287,11 @@ export default function CheckoutPage() {
                       onChange={(e) => setFormData({...formData, city: e.target.value})}
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white font-bold appearance-none cursor-pointer"
                     >
-                      <option value="القاهرة">القاهرة</option>
-                      <option value="الجيزة">الجيزة</option>
-                      <option value="الإسكندرية">الإسكندرية</option>
-                      <option value="القليوبية">القليوبية</option>
+                      {[
+                        "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر", "البحيرة", "الفيوم", "الغربية", "الإسماعيلية", "المنوفية", "المنيا", "القليوبية", "الوادي الجديد", "السويس", "اسوان", "اسيوط", "بني سويف", "بورسعيد", "دمياط", "الشرقية", "جنوب سيناء", "كفر الشيخ", "مطروح", "الأقصر", "قنا", "شمال سيناء", "سوهاج"
+                      ].map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
                     </select>
                   </div>
                    <div className="space-y-2">
