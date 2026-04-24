@@ -67,7 +67,8 @@ export async function PUT(request: Request) {
     const sanitizedBody = sanitizeObject(body);
     const validation = productSchema.safeParse(sanitizedBody);
 
-    if (!validation.success || !body.id) {
+    const productId = body.id || body._id;
+    if (!validation.success || !productId) {
       return NextResponse.json({ 
         error: "Validation Failed or Missing ID", 
         details: validation.success ? null : validation.error.flatten().fieldErrors 
@@ -75,7 +76,7 @@ export async function PUT(request: Request) {
     }
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(
-      body.id,
+      productId,
       { ...validation.data, price: Number(validation.data.price) },
       { new: true }
     );
@@ -99,7 +100,7 @@ export async function DELETE(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
-    const { id } = body;
+    const id = body.id || body._id;
 
     if (!id) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });

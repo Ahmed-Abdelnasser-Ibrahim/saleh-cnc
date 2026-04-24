@@ -98,9 +98,16 @@ export default function AdminProductsPage() {
             "Content-Type": "application/json",
             "x-admin-auth": "true"
           },
-          body: JSON.stringify({ ...validation.data, id: editingProduct.id }),
+          body: JSON.stringify({ ...validation.data, id: (editingProduct as any).id || (editingProduct as any)._id }),
         });
-        if (res.ok) showToast("تم تحديث المنتج بنجاح", "success");
+        if (res.ok) {
+          showToast("تم تحديث المنتج بنجاح", "success");
+          setIsModalOpen(false);
+          fetchProducts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || "فشل التحديث", "error");
+        }
       } else {
         const res = await fetch("/api/products", {
           method: "POST",
@@ -110,12 +117,16 @@ export default function AdminProductsPage() {
           },
           body: JSON.stringify(validation.data),
         });
-        if (res.ok) showToast("تم إضافة المنتج بنجاح", "success");
+        if (res.ok) {
+          showToast("تم إضافة المنتج بنجاح", "success");
+          setIsModalOpen(false);
+          fetchProducts();
+        } else {
+          showToast("فشل إضافة المنتج", "error");
+        }
       }
-      setIsModalOpen(false);
-      fetchProducts();
     } catch {
-      showToast("فشلت العملية", "error");
+      showToast("فشلت العملية - تأكد من اتصالك", "error");
     }
   };
 
