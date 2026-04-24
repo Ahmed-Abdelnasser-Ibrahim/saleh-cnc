@@ -13,7 +13,12 @@ export async function GET() {
   try {
     await connectDB();
     const products = await ProductModel.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(products);
+    // Ensure every product has an 'id' field for the frontend
+    const mappedProducts = products.map(p => ({
+      ...p.toObject(),
+      id: p._id.toString()
+    }));
+    return NextResponse.json(mappedProducts);
   } catch (error) {
     console.error("API Error (GET /products):", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
