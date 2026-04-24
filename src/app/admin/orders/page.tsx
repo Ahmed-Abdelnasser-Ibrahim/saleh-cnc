@@ -52,7 +52,10 @@ export default function AdminOrdersPage() {
         showToast(`تم تحديث حالة الطلب إلى ${status === 'paid' ? 'تم الدفع' : status}`, "success");
         fetchOrders();
         if (selectedOrder && selectedOrder.id === id) {
-          setSelectedOrder({ ...selectedOrder, status });
+          setSelectedOrder({ 
+            ...selectedOrder, 
+            status: status as "pending" | "completed" | "cancelled" | "paid" | "pending_confirmation" 
+          });
         }
       }
     } catch {
