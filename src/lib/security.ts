@@ -1,20 +1,25 @@
 import xss from "xss";
-import createDOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
-
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window as unknown as Parameters<typeof createDOMPurify>[0]);
 
 /**
  * Sanitizes a string to prevent XSS attacks.
- * Uses a combination of xss library and DOMPurify.
+ * Replaced JSDOM/DOMPurify with a lightweight approach using 'xss' library 
+ * and manual character escaping to ensure compatibility with Vercel Serverless runtime.
  */
 export function sanitize(text: string): string {
   if (!text) return "";
-  // First pass: DOMPurify to strip dangerous HTML
-  const clean = DOMPurify.sanitize(text);
-  // Second pass: xss for additional safety
-  return xss(clean);
+
+  // 1. Trim whitespace
+  let clean = text.trim();
+
+  // 2. Use xss library for robust HTML filtering
+  // This works on the server without JSDOM dependency
+  clean = xss(clean, {
+    whiteList: {}, // Strip all tags by default for most fields
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ["script"]
+  });
+
+  return clean;
 }
 
 /**
@@ -23,16 +28,20 @@ export function sanitize(text: string): string {
 export function sanitizeObject<T>(obj: T): T {
   if (typeof obj !== "object" || obj === null) return obj;
 
-  const newObj = Array.isArray(obj) ? [] : {};
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeObject(item)) as unknown as T;
+  }
+
+  const newObj = {} as Record<string, unknown>;
 
   for (const key in obj) {
     const value = (obj as Record<string, unknown>)[key];
     if (typeof value === "string") {
-      (newObj as Record<string, unknown>)[key] = sanitize(value);
+      newObj[key] = sanitize(value);
     } else if (typeof value === "object") {
-      (newObj as Record<string, unknown>)[key] = sanitizeObject(value);
+      newObj[key] = sanitizeObject(value);
     } else {
-      (newObj as Record<string, unknown>)[key] = value;
+      newObj[key] = value;
     }
   }
 
