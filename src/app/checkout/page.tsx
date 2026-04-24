@@ -1,18 +1,16 @@
 "use client";
-// Admin Dashboard Payment Logic Update
 
 import React, { useState } from "react";
-// Final Payment System Update
 import Image from "next/image";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { useCart } from "@/lib/cart-context";
-import { ArrowLeft, CheckCircle2, Ticket, MapPin, Phone, User, ShoppingBag, Smartphone, CreditCard, Upload, X } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Ticket, MapPin, Phone, User, ShoppingBag, Smartphone, CreditCard, Upload, X, Copy, Check, Info, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/toast-context";
 import { orderSchema } from "@/lib/validations";
-import { paymentConfig } from "@/config/payment";
+import { PAYMENT_CONFIG } from "@/config/payment";
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart } = useCart();
@@ -20,8 +18,11 @@ export default function CheckoutPage() {
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "vodafone" | "instapay">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash" | "instapay">("cash_on_delivery");
   const [paymentProof, setPaymentProof] = useState<string>("");
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [orderSuccess, setOrderSuccess] = useState<{id: string} | null>(null);
+  
   const [formData, setFormData] = useState({
     customer: "",
     phone: "",
@@ -31,6 +32,13 @@ export default function CheckoutPage() {
   });
   
   const router = useRouter();
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+    showToast("تم النسخ بنجاح", "success");
+  };
 
   const handleApplyCoupon = () => {
     if (coupon === "SALEH10") {
@@ -63,10 +71,13 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    if (paymentMethod !== "cod" && !paymentProof) {
-      showToast("يرجى رفع صورة إثبات التحويل", "error");
+    if (paymentMethod !== "cash_on_delivery" && !paymentProof) {
+      showToast("يرجى رفع صورة إثبات التحويل لضمان تأكيد طلبك", "error");
       return;
     }
+
+    const paymentStatus = paymentMethod === "cash_on_delivery" ? "not_required" : "pending_confirmation";
+    const orderStatus = paymentMethod === "cash_on_delivery" ? "pending" : "pending_payment_confirmation";
 
     const orderData = {
       customer: formData.customer,
@@ -82,10 +93,11 @@ export default function CheckoutPage() {
       })),
       total: finalPrice,
       paymentMethod,
+      paymentStatus,
+      status: orderStatus,
       paymentProof: paymentProof || ""
     };
 
-    // Strict Validation with Zod
     const validation = orderSchema.safeParse(orderData);
 
     if (!validation.success) {
@@ -109,30 +121,9 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Failed to save order");
       }
 
-      // Format WhatsApp message
-      const paymentText = paymentMethod === "cod" ? "الدفع عند الاستلام" : 
-                         paymentMethod === "vodafone" ? "فودافون كاش" : "إنستا باي";
-      
-      const message = `طلب جديد من متجر صالح CNC 🚀\n\n` +
-        `👤 العميل: ${validation.data.customer}\n` +
-        `📞 الهاتف: ${validation.data.phone}\n` +
-        `📍 العنوان: ${validation.data.address}, ${validation.data.city}\n` +
-        `💳 طريقة الدفع: ${paymentText}\n` +
-        `📝 ملاحظات: ${validation.data.notes || "لا يوجد"}\n\n` +
-        `🛒 المنتجات:\n` +
-        cart.map(item => `- ${item.name} (x${item.quantity}) = ${item.price * item.quantity} ج.م`).join("\n") +
-        `\n\n` +
-        `💰 الإجمالي الفرعي: ${totalPrice} ج.م\n` +
-        `🎟️ الخصم: ${discount} ج.م\n` +
-        `✅ الإجمالي النهائي: ${finalPrice} ج.م`;
-
-      const whatsappUrl = `https://wa.me/${paymentConfig.whatsapp.number}?text=${encodeURIComponent(message)}`;
-      
-      window.open(whatsappUrl, "_blank");
-      
+      setOrderSuccess({ id: data.orderId });
       clearCart();
-      showToast("تم إرسال طلبك بنجاح ✅", "success");
-      router.push("/");
+      showToast("تم تسجيل طلبك بنجاح ✅", "success");
     } catch (err) {
       const error = err as Error;
       showToast(error.message || "حدث خطأ أثناء حفظ الطلب. يرجى المحاولة لاحقاً.", "error");
@@ -141,9 +132,77 @@ export default function CheckoutPage() {
     }
   };
 
+  const sendWhatsAppProof = () => {
+    if (!orderSuccess) return;
+    
+    const paymentText = PAYMENT_CONFIG.paymentMethods[paymentMethod === 'vodafone_cash' ? 'vodafone' : paymentMethod === 'instapay' ? 'instapay' : 'cod'].label;
+    
+    const message = `أهلاً صالح CNC 👋\n` +
+      `لقد قمت بإتمام طلب جديد ورقم الطلب هو: ${orderSuccess.id.slice(-6).toUpperCase()}\n\n` +
+      `👤 العميل: ${formData.customer}\n` +
+      `📞 الهاتف: ${formData.phone}\n` +
+      `💳 طريقة الدفع: ${paymentText}\n` +
+      `💰 الإجمالي: ${finalPrice} ج.م\n\n` +
+      `لقد قمت بإرسال مبلغ التحويل وسأرفق سكرين شوت الدفع الآن.`;
+
+    const whatsappUrl = `https://wa.me/${PAYMENT_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  if (orderSuccess) {
+    return (
+      <main className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4">
+        <Navbar />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-slate-900 p-8 sm:p-12 rounded-[40px] border border-emerald-500/20 text-center max-w-2xl w-full shadow-2xl shadow-emerald-500/10"
+        >
+           <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
+              <ShieldCheck size={48} className="text-emerald-500" />
+           </div>
+           <h2 className="text-4xl font-black mb-4 text-white">تم استلام طلبك!</h2>
+           <p className="text-gray-400 mb-8 text-lg">
+             رقم الطلب الخاص بك هو: <span className="text-amber-500 font-mono font-bold">#{orderSuccess.id.slice(-6).toUpperCase()}</span>
+           </p>
+           
+           <div className="bg-white/5 rounded-3xl p-6 mb-8 text-right border border-white/5">
+              <h4 className="font-bold text-white mb-4 flex items-center justify-end gap-2">
+                الخطوة التالية <Info size={18} className="text-amber-500" />
+              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                {paymentMethod === 'cash_on_delivery' 
+                  ? "سيقوم فريقنا بمراجعة طلبك وتجهيزه للشحن فوراً. سنتواصل معك هاتفياً لتأكيد موعد التوصيل."
+                  : "يرجى إرسال سكرين شوت التحويل عبر الواتساب لتأكيد الدفع وبدء تجهيز الطلب فوراً."}
+              </p>
+           </div>
+
+           <div className="grid gap-4">
+             {paymentMethod !== 'cash_on_delivery' && (
+               <button 
+                 onClick={sendWhatsAppProof} 
+                 className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-5 rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-3"
+               >
+                 إرسال إثبات الدفع عبر واتساب
+               </button>
+             )}
+             <button 
+               onClick={() => router.push("/")} 
+               className="w-full bg-white/5 hover:bg-white/10 text-white px-8 py-5 rounded-2xl font-black transition-all border border-white/10"
+             >
+               العودة للرئيسية
+             </button>
+           </div>
+        </motion.div>
+        <Footer />
+      </main>
+    );
+  }
+
   if (cart.length === 0) {
     return (
       <main className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4">
+        <Navbar />
         <div className="bg-white/5 p-12 rounded-[40px] border border-white/5 text-center max-w-md w-full">
            <ShoppingBag size={80} className="mx-auto mb-6 text-gray-700" />
            <h2 className="text-3xl font-bold mb-4 text-white">سلة التسوق فارغة</h2>
@@ -155,6 +214,7 @@ export default function CheckoutPage() {
              تصفح المنتجات
            </button>
         </div>
+        <Footer />
       </main>
     );
   }
@@ -172,13 +232,13 @@ export default function CheckoutPage() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
-            <h1 className="text-4xl font-bold mb-8 text-white">إتمام الطلب</h1>
+            <h1 className="text-4xl font-black mb-8 text-white">إتمام الطلب السريع</h1>
             
             <form id="checkout-form" onSubmit={handleSubmitOrder} className="space-y-6">
               <div className="grid gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
-                    <User size={16} /> الاسم بالكامل
+                  <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2">
+                    <User size={16} className="text-amber-500" /> الاسم بالكامل
                   </label>
                   <input 
                     required
@@ -186,13 +246,13 @@ export default function CheckoutPage() {
                     value={formData.customer}
                     onChange={(e) => setFormData({...formData, customer: e.target.value})}
                     placeholder="أدخل اسمك بالكامل"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white font-bold"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
-                    <Phone size={16} /> رقم الهاتف (واتساب)
+                  <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2">
+                    <Phone size={16} className="text-amber-500" /> رقم الهاتف (واتساب)
                   </label>
                   <input 
                     required
@@ -200,14 +260,14 @@ export default function CheckoutPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="01xxxxxxxxx"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-left text-white"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-left text-white font-bold tracking-widest"
                     dir="ltr"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-400 flex items-center gap-2">
-                    <MapPin size={16} /> العنوان بالتفصيل
+                  <label className="text-sm font-bold text-gray-400 flex items-center gap-2 pr-2">
+                    <MapPin size={16} className="text-amber-500" /> العنوان بالتفصيل
                   </label>
                   <input 
                     required
@@ -215,17 +275,17 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={(e) => setFormData({...formData, address: e.target.value})}
                     placeholder="الشارع، المنطقة، رقم المنزل..."
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white font-bold"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                    <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-400">المحافظة</label>
+                    <label className="text-sm font-bold text-gray-400 pr-2">المحافظة</label>
                     <select 
                       value={formData.city}
                       onChange={(e) => setFormData({...formData, city: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white font-bold appearance-none cursor-pointer"
                     >
                       <option value="القاهرة">القاهرة</option>
                       <option value="الجيزة">الجيزة</option>
@@ -234,112 +294,146 @@ export default function CheckoutPage() {
                     </select>
                   </div>
                    <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-400">ملاحظات إضافية</label>
+                    <label className="text-sm font-bold text-gray-400 pr-2">ملاحظات إضافية</label>
                     <input 
                       type="text" 
                       value={formData.notes}
                       onChange={(e) => setFormData({...formData, notes: e.target.value})}
                       placeholder="اختياري"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Payment Methods */}
-              <div className="space-y-4 pt-4">
-                <h3 className="text-lg font-bold text-white mb-4">اختر طريقة الدفع</h3>
+              {/* Premium Payment Selection */}
+              <div className="space-y-6 pt-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-black text-white">طريقة الدفع</h3>
+                  <span className="text-xs text-gray-500 flex items-center gap-1">
+                    <ShieldCheck size={14} className="text-emerald-500" /> دفع آمن ومشفر
+                  </span>
+                </div>
                 
-                <div className="grid gap-3">
+                <div className="grid gap-4">
                   {/* COD */}
-                  <label className={`flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer ${paymentMethod === 'cod' ? 'bg-amber-500/10 border-amber-500/50' : 'bg-white/5 border-white/5 hover:border-white/20'}`}>
-                    <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="mt-1 accent-amber-500" />
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                        <CheckCircle2 className={paymentMethod === 'cod' ? 'text-amber-500' : 'text-gray-500'} />
+                  <div 
+                    onClick={() => setPaymentMethod('cash_on_delivery')}
+                    className={`group relative p-6 rounded-[28px] border-2 transition-all cursor-pointer overflow-hidden ${paymentMethod === 'cash_on_delivery' ? 'bg-amber-500/10 border-amber-500 shadow-xl shadow-amber-500/10' : 'bg-white/5 border-white/5 hover:border-white/20'}`}
+                  >
+                    <div className="flex items-center gap-5 relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${paymentMethod === 'cash_on_delivery' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'bg-white/5 text-gray-500'}`}>
+                        <CheckCircle2 size={28} />
                       </div>
-                      <div>
-                        <h4 className="font-bold text-white">الدفع عند الاستلام</h4>
-                        <p className="text-xs text-gray-500">ادفع نقداً عند استلام طلبك من المندوب.</p>
+                      <div className="flex-1 text-right">
+                        <h4 className="font-black text-lg text-white mb-1">{PAYMENT_CONFIG.paymentMethods.cod.label}</h4>
+                        <p className="text-xs text-gray-400 leading-relaxed">{PAYMENT_CONFIG.paymentMethods.cod.description}</p>
                       </div>
                     </div>
-                  </label>
+                  </div>
 
                   {/* Vodafone Cash */}
-                  <label className={`flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer ${paymentMethod === 'vodafone' ? 'bg-amber-500/10 border-amber-500/50' : 'bg-white/5 border-white/5 hover:border-white/20'}`}>
-                    <input type="radio" name="payment" checked={paymentMethod === 'vodafone'} onChange={() => setPaymentMethod('vodafone')} className="mt-1 accent-amber-500" />
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                        <Smartphone className={paymentMethod === 'vodafone' ? 'text-amber-500' : 'text-gray-500'} />
+                  <div 
+                    onClick={() => setPaymentMethod('vodafone_cash')}
+                    className={`group relative p-6 rounded-[28px] border-2 transition-all cursor-pointer overflow-hidden ${paymentMethod === 'vodafone_cash' ? 'bg-amber-500/10 border-amber-500 shadow-xl shadow-amber-500/10' : 'bg-white/5 border-white/5 hover:border-white/20'}`}
+                  >
+                    <div className="flex items-center gap-5 relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${paymentMethod === 'vodafone_cash' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'bg-white/5 text-gray-500'}`}>
+                        <Smartphone size={28} />
                       </div>
-                      <div>
-                        <h4 className="font-bold text-white">فودافون كاش</h4>
-                        <p className="text-xs text-gray-500">تحويل سريع ومباشر عبر المحفظة.</p>
+                      <div className="flex-1 text-right">
+                        <h4 className="font-black text-lg text-white mb-1">{PAYMENT_CONFIG.paymentMethods.vodafone.label}</h4>
+                        <p className="text-xs text-gray-400 leading-relaxed">{PAYMENT_CONFIG.paymentMethods.vodafone.description}</p>
                       </div>
                     </div>
-                  </label>
+                  </div>
 
                   {/* InstaPay */}
-                  <label className={`flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer ${paymentMethod === 'instapay' ? 'bg-amber-500/10 border-amber-500/50' : 'bg-white/5 border-white/5 hover:border-white/20'}`}>
-                    <input type="radio" name="payment" checked={paymentMethod === 'instapay'} onChange={() => setPaymentMethod('instapay')} className="mt-1 accent-amber-500" />
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                        <CreditCard className={paymentMethod === 'instapay' ? 'text-amber-500' : 'text-gray-500'} />
+                  <div 
+                    onClick={() => setPaymentMethod('instapay')}
+                    className={`group relative p-6 rounded-[28px] border-2 transition-all cursor-pointer overflow-hidden ${paymentMethod === 'instapay' ? 'bg-amber-500/10 border-amber-500 shadow-xl shadow-amber-500/10' : 'bg-white/5 border-white/5 hover:border-white/20'}`}
+                  >
+                    <div className="flex items-center gap-5 relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${paymentMethod === 'instapay' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'bg-white/5 text-gray-500'}`}>
+                        <CreditCard size={28} />
                       </div>
-                      <div>
-                        <h4 className="font-bold text-white">إنستا باي (InstaPay)</h4>
-                        <p className="text-xs text-gray-500">تحويل بنكي لحظي آمن.</p>
+                      <div className="flex-1 text-right">
+                        <h4 className="font-black text-lg text-white mb-1">{PAYMENT_CONFIG.paymentMethods.instapay.label}</h4>
+                        <p className="text-xs text-gray-400 leading-relaxed">{PAYMENT_CONFIG.paymentMethods.instapay.description}</p>
                       </div>
                     </div>
-                  </label>
+                  </div>
                 </div>
 
-                {/* Payment Instructions & Proof Upload */}
+                {/* Enhanced Payment Instructions */}
                 <AnimatePresence>
-                  {paymentMethod !== 'cod' && (
+                  {paymentMethod !== 'cash_on_delivery' && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-8"
                     >
-                      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
-                        <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl">
-                          <h5 className="font-bold text-amber-500 mb-2">تعليمات الدفع:</h5>
-                          <p className="text-sm text-gray-300 leading-relaxed">
-                            {paymentMethod === 'vodafone' ? paymentConfig.vodafoneCash.instructions : paymentConfig.instaPay.instructions}
-                            <br />
-                            الرقم/الحساب: <strong className="text-white text-lg block mt-2 tracking-widest">{paymentMethod === 'vodafone' ? paymentConfig.vodafoneCash.number : paymentConfig.instaPay.address}</strong>
-                          </p>
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between bg-amber-500/10 p-6 rounded-2xl border border-amber-500/20">
+                          <div className="text-right flex-1">
+                            <span className="text-amber-500 text-xs font-bold block mb-1">المبلغ الإجمالي للتحويل</span>
+                            <span className="text-3xl font-black text-white">{finalPrice} <span className="text-sm">ج.م</span></span>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => handleCopy(finalPrice.toString(), 'amount')}
+                            className="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-all text-white"
+                          >
+                            {copiedField === 'amount' ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} />}
+                          </button>
                         </div>
 
-                        <div className="space-y-4">
-                          <label className="text-sm font-medium text-gray-400 block">ارفع صورة إثبات التحويل (سكرين شوت)</label>
-                          <div className="relative group">
-                            <input 
-                              type="file" 
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                            />
-                            <div className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all bg-white/5 ${paymentProof ? 'border-emerald-500/50' : 'border-white/10 hover:border-amber-500/50'}`}>
-                              {paymentProof ? (
-                                <div className="flex flex-col items-center">
-                                  <div className="relative w-24 h-24 mb-2">
-                                    <Image src={paymentProof} alt="Proof" fill className="object-cover rounded-xl" unoptimized />
-                                    <button onClick={(e) => { e.preventDefault(); setPaymentProof(""); }} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-lg">
-                                      <X size={14} />
-                                    </button>
-                                  </div>
-                                  <span className="text-xs text-emerald-500 font-bold">تم اختيار إثبات الدفع ✅</span>
+                        <div className="flex items-center justify-between bg-white/5 p-6 rounded-2xl border border-white/10">
+                          <div className="text-right flex-1">
+                            <span className="text-gray-500 text-xs font-bold block mb-1">الرقم المخصص للتحويل</span>
+                            <span className="text-2xl font-black text-white tracking-[0.2em]">01068256479</span>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => handleCopy("01068256479", 'number')}
+                            className="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-all text-white"
+                          >
+                            {copiedField === 'number' ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 p-3 rounded-xl justify-center text-xs font-bold">
+                          <ShieldCheck size={16} /> {PAYMENT_CONFIG.paymentMethods[paymentMethod === 'vodafone_cash' ? 'vodafone' : 'instapay'].trustNote}
+                        </div>
+                        
+                        <div className="relative group">
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                          />
+                          <div className={`border-2 border-dashed rounded-3xl p-10 text-center transition-all bg-white/5 ${paymentProof ? 'border-emerald-500/50' : 'border-white/10 hover:border-amber-500/50'}`}>
+                            {paymentProof ? (
+                              <div className="flex flex-col items-center">
+                                <div className="relative w-32 h-32 mb-4 group/preview">
+                                  <Image src={paymentProof} alt="Proof" fill className="object-cover rounded-2xl shadow-2xl" unoptimized />
+                                  <button onClick={(e) => { e.preventDefault(); setPaymentProof(""); }} className="absolute -top-3 -right-3 bg-red-500 text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                    <X size={16} />
+                                  </button>
                                 </div>
-                              ) : (
-                                <>
-                                  <Upload size={32} className="mx-auto mb-2 text-gray-500 group-hover:text-amber-500 transition-colors" />
-                                  <p className="text-sm text-gray-500">اضغط لرفع سكرين شوت التحويل</p>
-                                </>
-                              )}
-                            </div>
+                                <span className="text-sm text-emerald-500 font-bold">تم اختيار إثبات الدفع بنجاح ✅</span>
+                              </div>
+                            ) : (
+                              <>
+                                <Upload size={48} className="mx-auto mb-4 text-gray-500 group-hover:text-amber-500 transition-colors" />
+                                <p className="text-white font-bold mb-1">ارفع سكرين شوت التحويل</p>
+                                <p className="text-xs text-gray-500">لضمان سرعة تأكيد الطلب</p>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -350,70 +444,75 @@ export default function CheckoutPage() {
             </form>
           </motion.div>
 
-          {/* Order Summary */}
+          {/* Premium Order Summary */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
-            <div className="glass p-8 rounded-[32px] border border-white/5 shadow-2xl sticky top-32">
-              <h2 className="text-2xl font-bold mb-8 text-white">ملخص الطلب</h2>
+            <div className="glass p-10 rounded-[40px] border border-white/5 shadow-2xl sticky top-32">
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-2xl font-black text-white">ملخص طلبك</h2>
+                <span className="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{cart.length} منتجات</span>
+              </div>
               
-              <div className="space-y-6 mb-8 max-h-[300px] overflow-y-auto no-scrollbar pr-2">
+              <div className="space-y-6 mb-10 max-h-[350px] overflow-y-auto no-scrollbar pr-2">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex gap-4 items-center">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white/5 border border-white/10 shrink-0">
+                  <div key={item.id} className="flex gap-5 items-center group">
+                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-white/5 border border-white/10 shrink-0 group-hover:scale-105 transition-transform">
                       <Image src={item.image} alt={item.name} fill className="object-cover" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-sm line-clamp-1 text-white">{item.name}</h4>
-                      <p className="text-gray-500 text-xs text-right">الكمية: {item.quantity}</p>
+                    <div className="flex-1 text-right">
+                      <h4 className="font-bold text-base text-white mb-1 line-clamp-1">{item.name}</h4>
+                      <p className="text-gray-500 text-xs">الكمية: {item.quantity} × {item.price} ج.م</p>
                     </div>
-                    <div className="font-bold text-sm whitespace-nowrap text-white">{item.price * item.quantity} ج.م</div>
+                    <div className="font-black text-base text-white whitespace-nowrap">{item.price * item.quantity} ج.م</div>
                   </div>
                 ))}
               </div>
 
-              {/* Coupon System */}
-              <div className="mb-8">
+              {/* Enhanced Coupon System */}
+              <div className="mb-10">
                 <div className="flex gap-2 p-2 bg-white/5 border border-white/10 rounded-2xl focus-within:border-amber-500 transition-all">
                   <div className="flex items-center gap-2 px-3 text-gray-500">
-                    <Ticket size={18} />
+                    <Ticket size={20} className="text-amber-500" />
                   </div>
                   <input 
                     type="text" 
-                    placeholder="كود الخصم (SALEH10)" 
+                    placeholder="لديك كود خصم؟" 
                     value={coupon}
                     onChange={(e) => setCoupon(e.target.value.toUpperCase())}
-                    className="bg-transparent border-none outline-none flex-1 text-sm font-bold text-white placeholder:font-normal"
+                    className="bg-transparent border-none outline-none flex-1 text-sm font-bold text-white placeholder:text-gray-600"
                   />
                   <button 
                     type="button"
                     onClick={handleApplyCoupon}
-                    className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-6 py-2 rounded-xl transition-all"
+                    className="bg-amber-500 hover:bg-amber-600 text-black text-xs font-black px-8 py-3 rounded-xl transition-all shadow-lg shadow-amber-500/20"
                   >
-                    تطبيق
+                    تفعيل
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
-                <div className="flex justify-between text-gray-400">
+              <div className="space-y-5 mb-10">
+                <div className="flex justify-between text-gray-400 font-bold">
                   <span>المجموع الفرعي</span>
                   <span>{totalPrice} ج.م</span>
                 </div>
-                <div className="flex justify-between text-emerald-500">
+                <div className="flex justify-between text-emerald-500 font-bold">
                   <span>الخصم</span>
                   <span>-{discount} ج.م</span>
                 </div>
-                <div className="flex justify-between text-gray-400">
-                  <span>الشحن</span>
-                  <span className="text-emerald-500">مجاني</span>
+                <div className="flex justify-between text-gray-400 font-bold">
+                  <span>مصاريف الشحن</span>
+                  <span className="text-emerald-500 text-sm">شحن مجاني لفترة محدودة</span>
                 </div>
                 <div className="h-px bg-white/10 my-4" />
-                <div className="flex justify-between text-3xl font-black text-white">
-                  <span>الإجمالي</span>
-                  <span className="text-amber-500">{finalPrice} ج.م</span>
+                <div className="flex justify-between items-end">
+                  <span className="text-gray-400 font-bold mb-1">الإجمالي النهائي</span>
+                  <span className="text-5xl font-black text-amber-500 tracking-tighter">
+                    {finalPrice} <span className="text-sm font-bold text-white">ج.م</span>
+                  </span>
                 </div>
               </div>
 
@@ -421,24 +520,25 @@ export default function CheckoutPage() {
                 form="checkout-form"
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20 group ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-6 rounded-3xl flex items-center justify-center gap-4 transition-all shadow-2xl shadow-emerald-500/30 group text-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                    جاري معالجة الطلب...
+                    <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" />
+                    جاري تأكيد طلبك...
                   </>
                 ) : (
                   <>
-                    إرسال الطلب وإثبات الدفع
-                    <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform" />
+                    تأكيد الطلب الآن
+                    <ArrowLeft size={28} className="group-hover:-translate-x-3 transition-transform" />
                   </>
                 )}
               </button>
               
-              <p className="text-center text-gray-500 text-xs mt-6">
-                بالضغط على تأكيد الطلب، فإنك توافق على سياسة الخصوصية وشروط الاستخدام.
-              </p>
+              <div className="flex items-center justify-center gap-4 mt-8 opacity-40 grayscale group-hover:grayscale-0 transition-all">
+                 <ShieldCheck size={20} />
+                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">Secure Payment Guaranteed</span>
+              </div>
             </div>
           </motion.div>
 

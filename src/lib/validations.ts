@@ -16,7 +16,8 @@ export const orderSchema = z.object({
     quantity: z.number().int().positive(),
   })).min(1, "السلة فارغة"),
   total: z.number().positive(),
-  paymentMethod: z.enum(["cod", "vodafone", "instapay"]).default("cod"),
+  paymentMethod: z.enum(["cash_on_delivery", "vodafone_cash", "instapay"]).default("cash_on_delivery"),
+  paymentStatus: z.enum(["not_required", "pending_confirmation", "paid", "rejected"]).default("not_required"),
   paymentProof: z.string().optional().default(""),
 });
 

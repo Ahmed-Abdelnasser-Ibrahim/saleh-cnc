@@ -6,9 +6,11 @@ export interface IOrder extends Document {
   phone: string;
   items: OrderItem[];
   total: number;
-  status: string;
-  paymentMethod: string;
+  status: "pending" | "pending_payment_confirmation" | "paid" | "processing" | "completed" | "cancelled" | "payment_rejected";
+  paymentMethod: "cash_on_delivery" | "vodafone_cash" | "instapay";
+  paymentStatus: "not_required" | "pending_confirmation" | "paid" | "rejected";
   paymentProof?: string;
+  paymentReference?: string;
   date: string;
   address: string;
   city: string;
@@ -20,8 +22,10 @@ const OrderSchema: Schema = new Schema({
   items: { type: Array, required: true },
   total: { type: Number, required: true },
   status: { type: String, default: "pending" },
-  paymentMethod: { type: String, default: "cod" },
+  paymentMethod: { type: String, default: "cash_on_delivery" },
+  paymentStatus: { type: String, default: "not_required" },
   paymentProof: { type: String },
+  paymentReference: { type: String },
   date: { type: String, default: () => new Date().toISOString() },
   address: { type: String, required: true },
   city: { type: String, required: true },
