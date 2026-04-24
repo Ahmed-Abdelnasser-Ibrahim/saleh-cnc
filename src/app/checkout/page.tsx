@@ -21,7 +21,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "vodafone" | "instapay">("cod");
   const [paymentProof, setPaymentProof] = useState<string>("");
   const [formData, setFormData] = useState({
-    name: "",
+    customer: "",
     phone: "",
     address: "",
     city: "القاهرة" as any,
@@ -67,15 +67,20 @@ export default function CheckoutPage() {
     }
 
     const orderData = {
-      customer: formData.name,
+      customer: formData.customer,
       phone: formData.phone,
       address: formData.address,
       city: formData.city,
-      notes: formData.notes,
-      items: cart,
+      notes: formData.notes || "",
+      items: cart.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
       total: finalPrice,
       paymentMethod,
-      paymentProof
+      paymentProof: paymentProof || ""
     };
 
     // Strict Validation with Zod
@@ -176,8 +181,8 @@ export default function CheckoutPage() {
                   <input 
                     required
                     type="text" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    value={formData.customer}
+                    onChange={(e) => setFormData({...formData, customer: e.target.value})}
                     placeholder="أدخل اسمك بالكامل"
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 outline-none focus:border-amber-500 transition-all text-white"
                   />
