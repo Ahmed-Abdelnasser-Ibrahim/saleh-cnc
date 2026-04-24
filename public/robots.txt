@@ -5,6 +5,9 @@ Allow: /
 # *
 User-agent: *
 Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
 Disallow: /login
 
 # Host
