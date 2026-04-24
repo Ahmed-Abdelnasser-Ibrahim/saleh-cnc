@@ -119,7 +119,7 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string | number) => {
     try {
       const res = await fetch("/api/products", {
         method: "DELETE",

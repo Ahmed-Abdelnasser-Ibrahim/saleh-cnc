@@ -1,9 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { OrderItem } from "@/lib/data";
 
 export interface IOrder extends Document {
   customer: string;
   phone: string;
-  items: any[];
+  items: OrderItem[];
   total: number;
   status: string;
   date: string;

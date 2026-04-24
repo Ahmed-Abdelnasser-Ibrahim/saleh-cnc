@@ -11,7 +11,7 @@ import { categories as staticCategories } from "@/lib/data";
 export const revalidate = 3600; // Revalidate every hour
 
 export default async function Home() {
-  const db = getDb();
+  const db = await getDb();
   const products = db.products?.slice(0, 8) || [];
   
   return (

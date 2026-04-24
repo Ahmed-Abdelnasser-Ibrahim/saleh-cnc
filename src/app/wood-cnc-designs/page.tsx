@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   keywords: ["تصميمات CNC خشب", "حفر خشب مودرن", "ديكورات CNC", "نماذج خشبية CNC"],
 };
 
-export default function WoodCncDesignsPage() {
-  const db = getDb();
+export default async function WoodCncDesignsPage() {
+  const db = await getDb();
   const products = db.products?.filter(p => p.category === "ديكور جدران") || [];
 
   return (

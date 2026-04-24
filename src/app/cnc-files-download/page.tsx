@@ -3,7 +3,7 @@ import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { Metadata } from "next";
 import Link from "next/link";
-import { Download, FileCode, CheckCircle } from "lucide-react";
+import { Download, FileCode } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "تحميل ملفات CNC مجانية | تصميمات DXF و Artcam جاهزة للتشغيل",

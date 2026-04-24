@@ -2,7 +2,7 @@ import React from "react";
 
 interface StructuredDataProps {
   type: "Organization" | "Product" | "ItemList";
-  data: any;
+  data: Record<string, unknown>;
 }
 
 export default function StructuredData({ type, data }: StructuredDataProps) {

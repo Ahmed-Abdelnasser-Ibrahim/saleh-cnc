@@ -7,8 +7,8 @@ import { useToast } from "./toast-context";
 interface WishlistContextType {
   wishlist: Product[];
   addToWishlist: (product: Product) => void;
-  removeFromWishlist: (productId: number) => void;
-  isInWishlist: (productId: number) => boolean;
+  removeFromWishlist: (productId: string | number) => void;
+  isInWishlist: (productId: string | number) => boolean;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -22,9 +22,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        requestAnimationFrame(() => {
-          setWishlist(parsed);
-        });
+        setWishlist(parsed);
       } catch (e) {
         console.error("Failed to parse wishlist", e);
       }
@@ -44,12 +42,12 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const removeFromWishlist = (productId: number) => {
+  const removeFromWishlist = (productId: string | number) => {
     setWishlist(wishlist.filter(item => item.id !== productId));
     if (showToast) showToast("تم الإزالة من المفضلة", "success");
   };
 
-  const isInWishlist = (productId: number) => {
+  const isInWishlist = (productId: string | number) => {
     return !!wishlist.find(item => item.id === productId);
   };
 
