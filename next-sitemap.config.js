@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://saleh-cnc.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://saleh-cnc-vp15.vercel.app',
   generateRobotsTxt: true,
   exclude: ['/admin/*', '/login'],
   robotsTxtOptions: {
