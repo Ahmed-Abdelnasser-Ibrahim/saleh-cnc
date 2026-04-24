@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getDb, saveDb } from "@/lib/db";
+import connectDB from "@/lib/mongodb/mongoose";
+import SettingsModel from "@/lib/mongodb/models/Settings";
 import { settingsSchema } from "@/lib/validations";
 import { sanitizeObject } from "@/lib/security";
 
@@ -9,9 +10,14 @@ const isAdmin = (request: Request) => {
 
 export async function GET() {
   try {
-    const db = getDb();
-    return NextResponse.json(db.settings || {});
-  } catch {
+    await connectDB();
+    let settings = await SettingsModel.findOne({});
+    if (!settings) {
+      settings = await SettingsModel.create({});
+    }
+    return NextResponse.json(settings);
+  } catch (error) {
+    console.error("API Error (GET /settings):", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -22,6 +28,7 @@ export async function PUT(request: Request) {
   }
 
   try {
+    await connectDB();
     const body = await request.json();
     const sanitizedBody = sanitizeObject(body);
     const validation = settingsSchema.safeParse(sanitizedBody);
@@ -33,12 +40,12 @@ export async function PUT(request: Request) {
       }, { status: 400 });
     }
 
-    const settings = validation.data;
-    const db = getDb();
-    db.settings = { ...db.settings, ...settings };
-    saveDb(db);
-    return NextResponse.json(db.settings);
-  } catch {
+    const settingsData = validation.data;
+    const settings = await SettingsModel.findOneAndUpdate({}, settingsData, { new: true, upsert: true });
+    
+    return NextResponse.json(settings);
+  } catch (error) {
+    console.error("API Error (PUT /settings):", error);
     return NextResponse.json({ error: "Failed to update settings" }, { status: 500 });
   }
 }

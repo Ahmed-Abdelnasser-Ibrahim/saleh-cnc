@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getDb, saveDb } from "@/lib/db";
-import { Product } from "@/lib/data";
+import connectDB from "@/lib/mongodb/mongoose";
+import ProductModel from "@/lib/mongodb/models/Product";
 import { productSchema } from "@/lib/validations";
 import { sanitizeObject } from "@/lib/security";
 
@@ -11,9 +11,11 @@ const isAdmin = (request: Request) => {
 
 export async function GET() {
   try {
-    const db = getDb();
-    return NextResponse.json(db.products || []);
-  } catch {
+    await connectDB();
+    const products = await ProductModel.find({}).sort({ createdAt: -1 });
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error("API Error (GET /products):", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -24,6 +26,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    await connectDB();
     const body = await request.json();
     const sanitizedBody = sanitizeObject(body);
     const validation = productSchema.safeParse(sanitizedBody);
@@ -35,18 +38,15 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    const product = validation.data;
-    const db = getDb();
-    const newProduct: Product = {
-      ...product,
-      id: Date.now(),
-      price: Number(product.price)
-    } as Product;
+    const productData = validation.data;
+    const newProduct = await ProductModel.create({
+      ...productData,
+      price: Number(productData.price)
+    });
 
-    db.products = [newProduct, ...db.products];
-    saveDb(db);
     return NextResponse.json(newProduct, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("API Error (POST /products):", error);
     return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
   }
 }
@@ -57,6 +57,7 @@ export async function PUT(request: Request) {
   }
 
   try {
+    await connectDB();
     const body = await request.json();
     const sanitizedBody = sanitizeObject(body);
     const validation = productSchema.safeParse(sanitizedBody);
@@ -68,23 +69,19 @@ export async function PUT(request: Request) {
       }, { status: 400 });
     }
 
-    const updatedProduct = validation.data;
-    const db = getDb();
-    const index = db.products.findIndex((p: Product) => p.id === body.id);
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      body.id,
+      { ...validation.data, price: Number(validation.data.price) },
+      { new: true }
+    );
     
-    if (index === -1) {
+    if (!updatedProduct) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    db.products[index] = { 
-      ...updatedProduct, 
-      id: body.id, 
-      price: Number(updatedProduct.price) 
-    } as Product;
-    
-    saveDb(db);
-    return NextResponse.json(db.products[index]);
-  } catch {
+    return NextResponse.json(updatedProduct);
+  } catch (error) {
+    console.error("API Error (PUT /products):", error);
     return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
   }
 }
@@ -95,6 +92,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
+    await connectDB();
     const body = await request.json();
     const { id } = body;
 
@@ -102,17 +100,15 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
-    const db = getDb();
-    const initialLength = db.products.length;
-    db.products = db.products.filter((p: Product) => p.id !== id);
+    const deletedProduct = await ProductModel.findByIdAndDelete(id);
     
-    if (db.products.length === initialLength) {
+    if (!deletedProduct) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    saveDb(db);
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("API Error (DELETE /products):", error);
     return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
   }
 }

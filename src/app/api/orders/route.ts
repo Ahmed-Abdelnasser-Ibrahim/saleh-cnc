@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getDb, saveDb } from "@/lib/db";
-import { Order } from "@/lib/data";
+import connectDB from "@/lib/mongodb/mongoose";
+import OrderModel from "@/lib/mongodb/models/Order";
 import { orderSchema } from "@/lib/validations";
 import { sanitizeObject } from "@/lib/security";
 
@@ -14,15 +14,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    const db = getDb();
-    return NextResponse.json(db.orders || []);
-  } catch {
+    await connectDB();
+    const orders = await OrderModel.find({}).sort({ createdAt: -1 });
+    return NextResponse.json(orders);
+  } catch (error) {
+    console.error("API Error (GET /orders):", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    await connectDB();
     const body = await request.json();
     
     // 1. Sanitize all inputs
@@ -38,26 +41,21 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    const order = validation.data;
-    const db = getDb();
+    const orderData = validation.data;
     
-    const newOrder: Order = {
-      ...order,
-      id: `ORD-${Date.now().toString().slice(-6)}`,
-      date: new Date().toISOString(),
+    const newOrder = await OrderModel.create({
+      ...orderData,
       status: "pending"
-    } as Order;
-
-    db.orders = [newOrder, ...(db.orders || [])];
-    saveDb(db);
+    });
     
     return NextResponse.json({ 
       success: true, 
       message: "Order created successfully",
-      orderId: newOrder.id 
+      orderId: newOrder._id 
     }, { status: 201 });
 
-  } catch {
+  } catch (error) {
+    console.error("API Error (POST /orders):", error);
     return NextResponse.json({ error: "Failed to process order" }, { status: 500 });
   }
 }
@@ -68,6 +66,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
+    await connectDB();
     const body = await request.json();
     const { id } = body;
 
@@ -75,9 +74,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Order ID is required" }, { status: 400 });
     }
 
-    const db = getDb();
-    db.orders = db.orders.filter((o: Order) => o.id !== id);
-    saveDb(db);
+    await OrderModel.findByIdAndDelete(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("API Error (DELETE /orders):", error);

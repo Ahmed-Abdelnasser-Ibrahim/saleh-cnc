@@ -1,56 +1,39 @@
-import fs from "fs";
-import path from "path";
-import { DbData, products } from "./data";
+import connectDB from "@/lib/mongodb/mongoose";
+import Product from "@/lib/mongodb/models/Product";
+import Order from "@/lib/mongodb/models/Order";
+import Settings from "@/lib/mongodb/models/Settings";
+import { products } from "./data";
 
-const DB_PATH = path.join(process.cwd(), "data", "db.json");
+export async function getDb() {
+  await connectDB();
+  
+  const dbProducts = await Product.find({}).sort({ createdAt: -1 });
+  const dbOrders = await Order.find({}).sort({ createdAt: -1 });
+  let dbSettings = await Settings.findOne({});
 
-// Initial structure
-const INITIAL_DATA: DbData = {
-  products: products,
-  orders: [],
-  settings: {
-    siteName: "صالح CNC",
-    whatsapp: "01068256479",
-    email: "info@saleh-cnc.com",
-    facebook: "#",
-    instagram: "#",
-    address: "القاهرة، مصر"
+  if (!dbSettings) {
+    dbSettings = await Settings.create({
+      siteName: "صالح CNC",
+      whatsapp: "01068256479",
+      email: "info@saleh-cnc.com",
+      address: "القاهرة، مصر"
+    });
   }
-};
 
-export function getDb(): DbData {
-  try {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    if (!fs.existsSync(DB_PATH)) {
-      fs.writeFileSync(DB_PATH, JSON.stringify(INITIAL_DATA, null, 2));
-    }
-    const data = fs.readFileSync(DB_PATH, "utf-8");
-    const db = JSON.parse(data) as DbData;
-    
-    // Auto-populate if empty
-    if (!db.products || db.products.length === 0) {
-      db.products = products;
-      saveDb(db);
-    }
-    
-    return db;
-  } catch (err) {
-    console.error("Database read error:", err);
-    return INITIAL_DATA;
+  // If no products in DB, seed with initial data
+  if (dbProducts.length === 0) {
+    await Product.insertMany(products);
+    const refreshedProducts = await Product.find({}).sort({ createdAt: -1 });
+    return {
+      products: JSON.parse(JSON.stringify(refreshedProducts)),
+      orders: JSON.parse(JSON.stringify(dbOrders)),
+      settings: JSON.parse(JSON.stringify(dbSettings))
+    };
   }
-}
 
-export function saveDb(data: DbData): void {
-  try {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.error("Database save error:", err);
-  }
+  return {
+    products: JSON.parse(JSON.stringify(dbProducts)),
+    orders: JSON.parse(JSON.stringify(dbOrders)),
+    settings: JSON.parse(JSON.stringify(dbSettings))
+  };
 }
