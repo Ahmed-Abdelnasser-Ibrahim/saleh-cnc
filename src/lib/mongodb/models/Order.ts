@@ -7,6 +7,8 @@ export interface IOrder extends Document {
   items: OrderItem[];
   total: number;
   status: string;
+  paymentMethod: string;
+  paymentProof?: string;
   date: string;
   address: string;
   city: string;
@@ -18,6 +20,8 @@ const OrderSchema: Schema = new Schema({
   items: { type: Array, required: true },
   total: { type: Number, required: true },
   status: { type: String, default: "pending" },
+  paymentMethod: { type: String, default: "cod" },
+  paymentProof: { type: String },
   date: { type: String, default: () => new Date().toISOString() },
   address: { type: String, required: true },
   city: { type: String, required: true },

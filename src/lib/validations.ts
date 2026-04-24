@@ -10,12 +10,14 @@ export const orderSchema = z.object({
   city: z.enum(["القاهرة", "الجيزة", "الإسكندرية", "القليوبية"]),
   notes: z.string().max(500, "الملاحظات طويلة جداً").optional().or(z.literal("")),
   items: z.array(z.object({
-    id: z.number(),
+    id: z.union([z.string(), z.number()]),
     name: z.string(),
     price: z.number().positive(),
     quantity: z.number().int().positive(),
   })).min(1, "السلة فارغة"),
   total: z.number().positive(),
+  paymentMethod: z.enum(["cod", "vodafone", "instapay"]).default("cod"),
+  paymentProof: z.string().optional().or(z.literal("")),
 });
 
 export const productSchema = z.object({

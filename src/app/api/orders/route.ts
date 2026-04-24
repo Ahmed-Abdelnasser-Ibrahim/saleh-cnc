@@ -42,10 +42,11 @@ export async function POST(request: Request) {
     }
 
     const orderData = validation.data;
+    const status = orderData.paymentMethod === "cod" ? "pending" : "pending_confirmation";
     
     const newOrder = await OrderModel.create({
       ...orderData,
-      status: "pending"
+      status: status
     });
     
     return NextResponse.json({ 
