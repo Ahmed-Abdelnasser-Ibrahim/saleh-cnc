@@ -432,59 +432,55 @@ export default function AdminOrdersPage() {
 
                       {/* Management Controls */}
                       <section className="space-y-4">
-                         <h4 className="text-amber-500 font-bold text-sm uppercase tracking-widest text-right">إجراءات المدير</h4>
-                         <div className="grid gap-3">
-                            {selectedOrder.paymentStatus === 'pending_confirmation' && (
-                               <div className="grid grid-cols-2 gap-3">
-                                  <button 
-                                    onClick={() => {
-                                      updateStatus(selectedOrder.id, 'paid', 'paid');
-                                      sendWhatsAppUpdate(selectedOrder, 'paid');
-                                    }}
-                                    className="bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20"
-                                  >
-                                    <CheckCircle size={20} /> تأكيد الدفع
-                                  </button>
-                                  <button 
-                                    onClick={() => {
-                                      updateStatus(selectedOrder.id, 'payment_rejected', 'rejected');
-                                      sendWhatsAppUpdate(selectedOrder, 'rejected');
-                                    }}
-                                    className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white font-black py-5 rounded-2xl border border-red-500/20 transition-all"
-                                  >
-                                    <X size={20} /> رفض الدفع
-                                  </button>
-                               </div>
-                            )}
-
+                         <h4 className="text-amber-500 font-bold text-sm uppercase tracking-widest text-right">تحديث حالة الطلب (5 مراحل)</h4>
+                         <div className="grid grid-cols-1 gap-3">
+                            {/* Row 1: Early Stages */}
                             <div className="grid grid-cols-2 gap-3">
                                <button 
-                                  onClick={() => updateStatus(selectedOrder.id, 'processing')}
-                                  className="bg-purple-600 hover:bg-purple-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-purple-600/20"
+                                  onClick={() => updateStatus(selectedOrder.id, 'pending')}
+                                  className={`py-4 rounded-2xl font-black text-sm transition-all border ${selectedOrder.status === 'pending' ? 'bg-amber-500 text-black border-amber-500' : 'bg-white/5 text-amber-500 border-amber-500/20 hover:bg-amber-500/10'}`}
                                 >
-                                  <Package size={18} /> جاري التجهيز
+                                  قيد المراجعة
                                 </button>
                                 <button 
-                                  onClick={() => {
-                                     updateStatus(selectedOrder.id, 'shipped');
-                                     sendWhatsAppUpdate(selectedOrder, 'shipped');
-                                  }}
-                                  className="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-orange-500/20"
+                                  onClick={() => updateStatus(selectedOrder.id, 'pending_payment_confirmation')}
+                                  className={`py-4 rounded-2xl font-black text-sm transition-all border ${selectedOrder.status === 'pending_payment_confirmation' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white/5 text-blue-500 border-blue-500/20 hover:bg-blue-500/10'}`}
                                 >
-                                  <Truck size={18} /> تم الشحن
+                                  مراجعة الدفع
                                 </button>
                             </div>
-                            <button 
-                               onClick={() => updateStatus(selectedOrder.id, 'completed')}
-                               className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20"
-                             >
-                               <CheckCircle size={18} /> تم التوصيل
-                             </button>
+
+                            {/* Row 2: Production & Shipping */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <button 
+                                   onClick={() => updateStatus(selectedOrder.id, 'processing')}
+                                   className={`py-4 rounded-2xl font-black text-sm transition-all border ${selectedOrder.status === 'processing' ? 'bg-purple-600 text-white border-purple-600' : 'bg-white/5 text-purple-400 border-purple-500/20 hover:bg-purple-500/10'}`}
+                                 >
+                                   جاري التجهيز
+                                 </button>
+                                 <button 
+                                   onClick={() => {
+                                      updateStatus(selectedOrder.id, 'shipped');
+                                      sendWhatsAppUpdate(selectedOrder, 'shipped');
+                                   }}
+                                   className={`py-4 rounded-2xl font-black text-sm transition-all border ${selectedOrder.status === 'shipped' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white/5 text-orange-400 border-orange-500/20 hover:bg-orange-500/10'}`}
+                                 >
+                                   تم الشحن
+                                 </button>
+                             </div>
+
+                             {/* Row 3: Completion */}
+                             <button 
+                                onClick={() => updateStatus(selectedOrder.id, 'completed')}
+                                className={`w-full py-5 rounded-2xl font-black text-lg transition-all border ${selectedOrder.status === 'completed' ? 'bg-emerald-500 text-white border-emerald-500 shadow-xl shadow-emerald-500/20' : 'bg-white/5 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/10'}`}
+                              >
+                                تم التوصيل ✅
+                              </button>
 
                             <a 
                               href={`https://wa.me/${selectedOrder.phone.startsWith('0') ? '2' + selectedOrder.phone : selectedOrder.phone}`}
                               target="_blank"
-                              className="w-full bg-emerald-500/5 hover:bg-emerald-500 text-emerald-500 hover:text-white font-black py-5 rounded-2xl border border-emerald-500/10 flex items-center justify-center gap-3 transition-all"
+                              className="w-full bg-emerald-500/5 hover:bg-emerald-500 text-emerald-500 hover:text-white font-black py-5 rounded-2xl border border-emerald-500/10 flex items-center justify-center gap-3 transition-all mt-4"
                             >
                               <MessageSquare size={20} /> تواصل سريع عبر واتساب
                             </a>
