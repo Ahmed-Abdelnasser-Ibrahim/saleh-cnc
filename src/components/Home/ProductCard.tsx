@@ -120,31 +120,32 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
           )}
         </AnimatePresence>
         
-        <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2">
-          <div className="text-[14px] sm:text-2xl font-bold text-amber-500 whitespace-nowrap">
-            {product.price} <span className="text-[9px] sm:text-sm font-normal text-gray-500 mr-0.5">ج.م</span>
-          </div>
-          
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                addToCart(product);
-              }}
-              aria-label={`إضافة ${product.name} إلى السلة`}
-              className="lg:hidden p-2 sm:p-2.5 bg-amber-500 text-black rounded-lg sm:rounded-xl hover:bg-amber-600 transition-all active:scale-90 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            >
-              <ShoppingCart size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />
-            </button>
-
+        <div className="mt-auto space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[14px] sm:text-2xl font-bold text-amber-500 whitespace-nowrap">
+              {product.price} <span className="text-[9px] sm:text-sm font-normal text-gray-500 mr-0.5">ج.م</span>
+            </div>
+            
             <button 
               onClick={() => setShowDescription(!showDescription)}
               aria-label={showDescription ? "إخفاء الوصف" : "عرض الوصف"}
               className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${showDescription ? "bg-white/10 text-amber-500" : "text-gray-500 hover:text-white hover:bg-white/5 border border-white/5"}`}
             >
-              {showDescription ? <ChevronUp size={16} className="sm:w-5 sm:h-5" aria-hidden="true" /> : <ChevronDown size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />}
+              {showDescription ? <ChevronUp size={14} className="sm:w-5 sm:h-5" aria-hidden="true" /> : <ChevronDown size={14} className="sm:w-5 sm:h-5" aria-hidden="true" />}
             </button>
           </div>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(product);
+            }}
+            aria-label={`إضافة ${product.name} إلى السلة`}
+            className="lg:hidden w-full bg-amber-500 text-black py-2.5 sm:py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-lg shadow-amber-500/10 text-[10px] sm:text-sm"
+          >
+            <ShoppingCart size={14} className="sm:w-4 sm:h-4" aria-hidden="true" />
+            أضف للسلة
+          </button>
         </div>
       </div>
     </motion.div>
