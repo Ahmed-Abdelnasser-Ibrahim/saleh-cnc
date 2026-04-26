@@ -58,6 +58,8 @@ export default async function Home() {
               <Link href="/wood-cnc-designs" className="text-amber-500 hover:underline font-bold">تصميمات CNC خشب</Link>
               <span className="text-gray-700">|</span>
               <Link href="/laser-wood-products" className="text-amber-500 hover:underline font-bold">منتجات ليزر خشب</Link>
+              <span className="text-gray-700">|</span>
+              <Link href="/track-order" className="text-white hover:text-amber-500 font-black bg-white/5 px-4 py-1 rounded-full border border-white/10 transition-all">تتبع طلبك الآن 🔍</Link>
             </div>
           </div>
         </div>
