@@ -73,11 +73,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png" },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/images/logos/logo-1.png",
   },
   verification: {
     google: "k2kse5ivOi3itDEo8bSkaO4HiYTb-PsyqAqhaibtACc",
