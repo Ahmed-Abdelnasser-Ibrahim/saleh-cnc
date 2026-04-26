@@ -23,6 +23,8 @@ export default function CheckoutPage() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [orderSuccess, setOrderSuccess] = useState<{id: string} | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [shippingPrice, setShippingPrice] = useState(0);
+  const [shippingRates, setShippingRates] = useState<Record<string, number>>({});
   
   const [formData, setFormData] = useState({
     customer: "",
@@ -31,6 +33,25 @@ export default function CheckoutPage() {
     city: "القاهرة" as any,
     notes: ""
   });
+
+  // Fetch shipping rates on load
+  React.useEffect(() => {
+    fetch("/api/settings")
+      .then(res => res.json())
+      .then(data => {
+        if (data.shippingRates) {
+          setShippingRates(data.shippingRates);
+          setShippingPrice(data.shippingRates["القاهرة"] || 0);
+        }
+      });
+  }, []);
+
+  // Update shipping price when city changes
+  React.useEffect(() => {
+    if (shippingRates[formData.city] !== undefined) {
+      setShippingPrice(shippingRates[formData.city]);
+    }
+  }, [formData.city, shippingRates]);
   
   const router = useRouter();
 
@@ -61,7 +82,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const finalPrice = totalPrice - discount;
+  const finalPrice = totalPrice - discount + shippingPrice;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -350,7 +371,7 @@ export default function CheckoutPage() {
               <div className="space-y-5 mb-10">
                 <div className="flex justify-between text-gray-400 font-bold"><span>المجموع الفرعي</span><span>{totalPrice} ج.م</span></div>
                 <div className="flex justify-between text-emerald-500 font-bold"><span>الخصم</span><span>-{discount} ج.م</span></div>
-                <div className="flex justify-between text-gray-400 font-bold"><span>مصاريف الشحن</span><span className="text-emerald-500 text-sm">شحن مجاني لفترة محدودة</span></div>
+                <div className="flex justify-between text-gray-400 font-bold"><span>مصاريف الشحن</span><span className={shippingPrice === 0 ? "text-emerald-500 text-sm" : "text-white text-sm"}>{shippingPrice === 0 ? "مجاني" : `${shippingPrice} ج.م`}</span></div>
                 <div className="h-px bg-white/10 my-4" /><div className="flex justify-between items-end"><span className="text-gray-400 font-bold mb-1">الإجمالي النهائي</span><span className="text-5xl font-black text-amber-500 tracking-tighter">{finalPrice} <span className="text-sm font-bold text-white">ج.م</span></span></div>
               </div>
               <button form="checkout-form" type="submit" disabled={isSubmitting} className={`w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-6 rounded-3xl flex items-center justify-center gap-4 transition-all shadow-2xl shadow-emerald-500/30 group text-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>

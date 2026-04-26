@@ -45,6 +45,7 @@ export const settingsSchema = z.object({
   facebook: z.string().url("رابط فيسبوك غير صحيح").or(z.literal("#")),
   instagram: z.string().url("رابط إنستغرام غير صحيح").or(z.literal("#")),
   address: z.string().min(5).max(100),
+  shippingRates: z.record(z.string(), z.number()).optional(),
 });
 
 export const loginSchema = z.object({

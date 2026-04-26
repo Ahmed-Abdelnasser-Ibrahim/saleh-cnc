@@ -44,6 +44,7 @@ export default function AdminDashboard() {
   const totalSales = orders.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
   const totalOrders = orders.length;
   const pendingOrders = orders.filter(o => o.status === "pending").length;
+  const completedOrders = orders.filter(o => o.status === "completed").length;
 
   // Top Products Calculation
   const productSales: Record<string, number> = {};
@@ -199,7 +200,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="text-right">
                            <div className="text-sm font-black">{order.total} ج.م</div>
-                           <div className="text-[10px] text-gray-500">{new Date(order.createdAt).toLocaleDateString('ar-EG')}</div>
+                           <div className="text-[10px] text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('ar-EG') : order.date}</div>
                         </div>
                       </div>
                     ))

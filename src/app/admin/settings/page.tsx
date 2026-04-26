@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import AdminSidebar from "@/components/Admin/AdminSidebar";
-import { Save, Globe, Phone, Mail, MessageSquare } from "lucide-react";
+import { Save, Globe, Phone, Mail, MessageSquare, Truck } from "lucide-react";
 import { useToast } from "@/lib/toast-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { settingsSchema } from "@/lib/validations";
@@ -20,13 +20,14 @@ export default function AdminSettingsPage() {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<any>({
     siteName: "صالح CNC",
     whatsapp: "01068256479",
     email: "info@saleh-cnc.com",
     facebook: "#",
     instagram: "#",
-    address: "القاهرة، مصر"
+    address: "القاهرة، مصر",
+    shippingRates: {}
   });
 
   const fetchSettings = React.useCallback(async () => {
@@ -168,7 +169,35 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end">
+            {/* Shipping Rates Settings */}
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <Truck size={20} className="text-amber-500" />
+                إدارة أسعار الشحن
+              </h2>
+              <p className="text-sm text-gray-500 mb-8">تحكم في تكلفة التوصيل لكل محافظة. السعر الذي تضعه هنا سيظهر للعميل في صفحة الدفع.</p>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {Object.keys(settings.shippingRates || {}).map((city) => (
+                  <div key={city} className="space-y-2 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <label className="text-[10px] text-gray-500 font-bold block truncate">{city}</label>
+                    <div className="relative">
+                      <input 
+                        type="number" 
+                        value={settings.shippingRates?.[city] || 0}
+                        onChange={(e) => {
+                          const newRates = { ...settings.shippingRates, [city]: Number(e.target.value) };
+                          setSettings({ ...settings, shippingRates: newRates });
+                        }}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 outline-none focus:border-amber-500 text-sm font-bold"
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-600">ج.م</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-end pt-4">
               <button 
                 type="submit"
                 disabled={isLoading || isSaving}

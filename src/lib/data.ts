@@ -77,6 +77,7 @@ export interface Order {
   paymentStatus: "not_required" | "pending_confirmation" | "paid" | "rejected";
   paymentProof?: string;
   date: string;
+  createdAt?: string;
   address: string;
   city: string;
 }
