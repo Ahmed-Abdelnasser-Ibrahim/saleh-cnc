@@ -67,7 +67,7 @@ export default function Navbar() {
                 
                 <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:border-amber-500 transition-colors shadow-2xl bg-black">
                   <Image
-                    src="/images/logos/logo-v4.jpg"
+                    src="/images/logos/logo-1.png"
                     alt="صالح CNC لوجو"
                     fill
                     sizes="(max-width: 640px) 48px, 64px"
@@ -75,14 +75,6 @@ export default function Navbar() {
                     priority
                   />
                 </div>
-              </div>
-              <div className="mr-3 flex flex-col">
-                <span className="text-xl sm:text-2xl font-black tracking-tighter text-white group-hover:text-amber-500 transition-colors leading-none">
-                  SALEH<span className="text-amber-500 group-hover:text-white">CNC</span>
-                </span>
-                <span className="text-[10px] text-amber-500/70 font-bold tracking-[0.2em] mt-1 hidden sm:block uppercase">
-                  Precision Engineering
-                </span>
               </div>
             </Link>
 
@@ -209,7 +201,7 @@ export default function Navbar() {
                 <div className="flex justify-between items-center mb-12">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/30 bg-black">
                       <Image
-                        src="/images/logos/logo-v4.jpg"
+                        src="/images/logos/logo-1.png"
                         alt="Saleh CNC Logo"
                         width={48}
                         height={48}
@@ -217,7 +209,6 @@ export default function Navbar() {
                         className="object-cover scale-110"
                       />
                     </div>
-                    <span className="text-2xl font-black text-amber-500">SALEH CNC</span>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-full text-white">
                     <X size={24} />
                   </button>
