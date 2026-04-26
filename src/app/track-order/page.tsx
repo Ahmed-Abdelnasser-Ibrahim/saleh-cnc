@@ -46,7 +46,7 @@ export default function TrackOrderPage() {
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <Navbar />
-      
+
       <div className="container mx-auto px-4 pt-32 pb-20 max-w-4xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">تتبع طلبك</h1>
@@ -60,15 +60,15 @@ export default function TrackOrderPage() {
           <div className="flex flex-col md:flex-row gap-4 bg-white/5 p-2 rounded-[32px] border border-white/10 focus-within:border-amber-500/50 transition-all shadow-2xl">
             <div className="flex-1 flex items-center gap-4 px-6 py-4">
               <Search className="text-amber-500" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="رقم الطلب (مثلاً: 65ad...) أو رقم الموبايل"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="bg-transparent border-none outline-none w-full text-lg font-bold placeholder:text-gray-600"
               />
             </div>
-            <button 
+            <button
               disabled={loading}
               className="bg-amber-500 hover:bg-amber-600 text-black font-black px-10 py-5 rounded-[24px] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
@@ -80,7 +80,7 @@ export default function TrackOrderPage() {
 
         <AnimatePresence mode="wait">
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -99,7 +99,7 @@ export default function TrackOrderPage() {
               {/* Order Info Card */}
               <div className="bg-white/5 border border-white/10 rounded-[40px] p-8 md:p-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[100px] -z-10" />
-                
+
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 border-bottom border-white/5 pb-8">
                   <div>
                     <span className="text-amber-500 text-sm font-bold block mb-2">رقم الطلب</span>
@@ -114,7 +114,7 @@ export default function TrackOrderPage() {
                 {/* Timeline */}
                 <div className="relative pt-10 pb-4">
                   <div className="absolute top-1/2 left-0 w-full h-1 bg-white/5 -translate-y-1/2 hidden md:block" />
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-8 relative z-10">
                     {STATUS_STEPS.map((step, index) => {
                       const isCompleted = index <= currentStepIndex;
@@ -123,9 +123,8 @@ export default function TrackOrderPage() {
 
                       return (
                         <div key={step.id} className="flex md:flex-col items-center gap-4 text-center">
-                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                            isCompleted ? `${step.bg} ${step.color} shadow-lg ${step.color === 'text-amber-500' ? 'shadow-amber-500/20' : ''}` : 'bg-white/5 text-gray-700'
-                          } ${isCurrent ? 'ring-4 ring-white/5 scale-110' : ''}`}>
+                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${isCompleted ? `${step.bg} ${step.color} shadow-lg ${step.color === 'text-amber-500' ? 'shadow-amber-500/20' : ''}` : 'bg-white/5 text-gray-700'
+                            } ${isCurrent ? 'ring-4 ring-white/5 scale-110' : ''}`}>
                             <Icon size={28} />
                           </div>
                           <div className="text-right md:text-center">
