@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import AdminSidebar from "@/components/Admin/AdminSidebar";
-import { Save, Globe, Phone, Mail, MessageSquare, Truck } from "lucide-react";
+import { Save, Globe, Phone, Mail, MessageSquare, Truck, CreditCard, Smartphone } from "lucide-react";
 import { useToast } from "@/lib/toast-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { settingsSchema } from "@/lib/validations";
@@ -27,7 +27,9 @@ export default function AdminSettingsPage() {
     facebook: "#",
     instagram: "#",
     address: "القاهرة، مصر",
-    shippingRates: {}
+    shippingRates: {},
+    vodafoneCashNumber: "01068256479",
+    instapayId: "saleh@instapay"
   });
 
   const fetchSettings = React.useCallback(async () => {
@@ -169,7 +171,33 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            {/* Shipping Rates Settings */}
+            {/* Payment Information Settings */}
+            <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <CreditCard size={20} className="text-amber-500" />
+                بيانات الدفع الإلكتروني
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-400 flex items-center gap-2">رقم فودافون كاش</label>
+                  <input 
+                    type="text" 
+                    value={settings.vodafoneCashNumber || ""}
+                    onChange={(e) => setSettings({...settings, vodafoneCashNumber: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-amber-500 font-mono tracking-widest"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-400 flex items-center gap-2">معرف إنستاباي (InstaPay ID)</label>
+                  <input 
+                    type="text" 
+                    value={settings.instapayId || ""}
+                    onChange={(e) => setSettings({...settings, instapayId: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+            </div>
             <div className="bg-slate-900 rounded-2xl sm:rounded-[32px] border border-white/5 p-4 sm:p-8 shadow-xl">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Truck size={20} className="text-amber-500" />

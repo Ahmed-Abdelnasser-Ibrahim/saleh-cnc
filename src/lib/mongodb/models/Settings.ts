@@ -8,6 +8,8 @@ export interface ISettings extends Document {
   instagram: string;
   address: string;
   shippingRates: Record<string, number>;
+  vodafoneCashNumber: string;
+  instapayId: string;
 }
 
 const SettingsSchema: Schema = new Schema({
@@ -17,6 +19,8 @@ const SettingsSchema: Schema = new Schema({
   facebook: { type: String, default: "#" },
   instagram: { type: String, default: "#" },
   address: { type: String, default: "القاهرة، مصر" },
+  vodafoneCashNumber: { type: String, default: "01068256479" },
+  instapayId: { type: String, default: "saleh@instapay" },
   shippingRates: {
     type: Map,
     of: Number,

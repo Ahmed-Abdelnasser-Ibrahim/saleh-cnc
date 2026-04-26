@@ -46,6 +46,8 @@ export const settingsSchema = z.object({
   instagram: z.string().url("رابط إنستغرام غير صحيح").or(z.literal("#")),
   address: z.string().min(5).max(100),
   shippingRates: z.record(z.string(), z.number()).optional(),
+  vodafoneCashNumber: z.string().regex(phoneRegex, "رقم فودافون كاش غير صحيح").optional(),
+  instapayId: z.string().min(3).optional(),
 });
 
 export const loginSchema = z.object({

@@ -25,6 +25,8 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [shippingPrice, setShippingPrice] = useState(0);
   const [shippingRates, setShippingRates] = useState<Record<string, number>>({});
+  const [vodafoneNumber, setVodafoneNumber] = useState("01068256479");
+  const [instapayId, setInstapayId] = useState("saleh@instapay");
   
   const [formData, setFormData] = useState({
     customer: "",
@@ -34,7 +36,7 @@ export default function CheckoutPage() {
     notes: ""
   });
 
-  // Fetch shipping rates on load
+  // Fetch shipping rates and payment info on load
   React.useEffect(() => {
     fetch("/api/settings")
       .then(res => res.json())
@@ -43,6 +45,8 @@ export default function CheckoutPage() {
           setShippingRates(data.shippingRates);
           setShippingPrice(data.shippingRates["القاهرة"] || 0);
         }
+        if (data.vodafoneCashNumber) setVodafoneNumber(data.vodafoneCashNumber);
+        if (data.instapayId) setInstapayId(data.instapayId);
       });
   }, []);
 
@@ -328,8 +332,15 @@ export default function CheckoutPage() {
                           <button type="button" onClick={() => handleCopy(finalPrice.toString(), 'amount')} className="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-all text-white">{copiedField === 'amount' ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} />}</button>
                         </div>
                         <div className="flex items-center justify-between bg-white/5 p-6 rounded-2xl border border-white/10">
-                          <div className="text-right flex-1"><span className="text-gray-500 text-xs font-bold block mb-1">الرقم المخصص للتحويل</span><span className="text-2xl font-black text-white tracking-[0.2em]">01068256479</span></div>
-                          <button type="button" onClick={() => handleCopy("01068256479", 'number')} className="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-all text-white">{copiedField === 'number' ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} />}</button>
+                          <div className="text-right flex-1">
+                            <span className="text-gray-500 text-xs font-bold block mb-1">
+                              {paymentMethod === 'vodafone_cash' ? "رقم فودافون كاش للتحويل" : "معرف إنستاباي (InstaPay ID)"}
+                            </span>
+                            <span className={`text-white font-black ${paymentMethod === 'vodafone_cash' ? 'text-2xl tracking-[0.2em]' : 'text-xl'}`}>
+                              {paymentMethod === 'vodafone_cash' ? vodafoneNumber : instapayId}
+                            </span>
+                          </div>
+                          <button type="button" onClick={() => handleCopy(paymentMethod === 'vodafone_cash' ? vodafoneNumber : instapayId, 'number')} className="bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-all text-white">{copiedField === 'number' ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} />}</button>
                         </div>
                       </div>
                       <div className="space-y-4">
