@@ -76,6 +76,14 @@ export default function Navbar() {
                   />
                 </div>
               </div>
+              <div className="mr-3 flex flex-col">
+                <span className="text-xl sm:text-2xl font-black tracking-tighter text-white group-hover:text-amber-500 transition-colors leading-none">
+                  SALEH<span className="text-amber-500 group-hover:text-white">CNC</span>
+                </span>
+                <span className="text-[10px] text-amber-500/70 font-bold tracking-[0.2em] mt-1 hidden sm:block uppercase">
+                  Precision Engineering
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Links */}
@@ -209,6 +217,7 @@ export default function Navbar() {
                         className="object-cover scale-110"
                       />
                     </div>
+                    <span className="text-2xl font-black text-amber-500">SALEH CNC</span>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-full text-white">
                     <X size={24} />
                   </button>
