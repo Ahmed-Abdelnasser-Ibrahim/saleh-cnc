@@ -185,21 +185,33 @@ export default function CheckoutPage() {
               </p>
            </div>
 
-           <div className="grid sm:grid-cols-2 gap-4">
-             <button 
-               onClick={() => router.push("/")} 
-               className="bg-amber-500 hover:bg-amber-600 text-black px-8 py-5 rounded-2xl font-black transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-3"
-             >
-               <Home size={22} /> العودة للتسوق
-             </button>
-             <a 
-               href={`https://wa.me/${PAYMENT_CONFIG.whatsappNumber}`}
-               target="_blank"
-               className="bg-white/5 hover:bg-white/10 text-white px-8 py-5 rounded-2xl font-black transition-all border border-white/10 flex items-center justify-center gap-3"
-             >
-               <MessageSquare size={22} className="text-emerald-500" /> مساعدة فنية؟
-             </a>
-           </div>
+           <div className="flex flex-col gap-4">
+              <a 
+                href={`https://wa.me/201068256479?text=${encodeURIComponent(`السلام عليكم، لقد قمت بإتمام طلب جديد برقم (#${orderSuccess.id.slice(-6).toUpperCase()}) باسم ${formData.customer}. يرجى تأكيد الطلب.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-white px-8 py-5 rounded-2xl font-black transition-all shadow-xl shadow-green-500/20 flex items-center justify-center gap-3 text-lg"
+              >
+                <MessageSquare size={24} /> أبلغنا على الواتساب لتأكيد طلبك فوراً
+              </a>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <button 
+                  onClick={() => router.push("/")} 
+                  className="bg-amber-500 hover:bg-amber-600 text-black px-8 py-5 rounded-2xl font-black transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-3"
+                >
+                  <Home size={22} /> العودة للتسوق
+                </button>
+                <a 
+                  href={`https://wa.me/201068256479`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/5 hover:bg-white/10 text-white px-8 py-5 rounded-2xl font-black transition-all border border-white/10 flex items-center justify-center gap-3"
+                >
+                  <Smartphone size={22} className="text-emerald-500" /> مساعدة فنية؟
+                </a>
+              </div>
+            </div>
         </motion.div>
         <Footer />
       </main>
