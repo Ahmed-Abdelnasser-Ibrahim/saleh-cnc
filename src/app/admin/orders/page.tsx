@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import AdminSidebar from "@/components/Admin/AdminSidebar";
-import { Search, Eye, Trash2, CheckCircle, Clock, X, Phone, User, MapPin, Package, FileSpreadsheet, ShoppingBag, CreditCard, MessageSquare, ExternalLink, AlertCircle, RefreshCcw } from "lucide-react";
+import { Search, Eye, Trash2, CheckCircle, Clock, X, Phone, User, MapPin, Package, FileSpreadsheet, ShoppingBag, CreditCard, MessageSquare, ExternalLink, AlertCircle, RefreshCcw, Truck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/lib/toast-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -117,15 +117,16 @@ export default function AdminOrdersPage() {
       // Order Status
       pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
       pending_payment_confirmation: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-      paid: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-      processing: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-      completed: "bg-green-500/10 text-green-500 border-green-500/20",
+      processing: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+      shipped: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+      completed: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
       cancelled: "bg-red-500/10 text-red-500 border-red-500/20",
       payment_rejected: "bg-rose-500/10 text-rose-500 border-rose-500/20",
       
       // Payment Status
       not_required: "bg-gray-500/10 text-gray-400 border-gray-500/10",
       pending_confirmation: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+      paid: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
       rejected: "bg-red-500/10 text-red-500 border-red-500/20"
     };
     return styles[value] || "bg-gray-500/10 text-gray-500 border-gray-500/20";
@@ -134,13 +135,14 @@ export default function AdminOrdersPage() {
   const getStatusLabel = (value: string) => {
     const labels: Record<string, string> = {
       pending: "قيد المراجعة",
-      pending_payment_confirmation: "في انتظار الدفع",
-      paid: "تم الدفع",
-      processing: "جاري التنفيذ",
+      pending_payment_confirmation: "مراجعة الدفع",
+      processing: "جاري التجهيز",
+      shipped: "تم الشحن",
       completed: "تم التوصيل",
       cancelled: "ملغي",
       payment_rejected: "مرفوض الدفع",
-      not_required: "عند الاستلام"
+      not_required: "عند الاستلام",
+      paid: "تم تأكيد الدفع"
     };
     return labels[value] || value;
   };
@@ -458,20 +460,26 @@ export default function AdminOrdersPage() {
                             <div className="grid grid-cols-2 gap-3">
                                <button 
                                   onClick={() => updateStatus(selectedOrder.id, 'processing')}
-                                  className="bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-blue-600/20"
+                                  className="bg-purple-600 hover:bg-purple-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-purple-600/20"
                                 >
-                                  <Clock size={18} /> جاري التنفيذ
+                                  <Package size={18} /> جاري التجهيز
                                 </button>
                                 <button 
                                   onClick={() => {
-                                    updateStatus(selectedOrder.id, 'completed');
-                                    sendWhatsAppUpdate(selectedOrder, 'shipped');
+                                     updateStatus(selectedOrder.id, 'shipped');
+                                     sendWhatsAppUpdate(selectedOrder, 'shipped');
                                   }}
-                                  className="bg-white/5 hover:bg-white/10 text-white font-black py-4 rounded-2xl border border-white/10 transition-all flex items-center justify-center gap-3"
+                                  className="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-orange-500/20"
                                 >
-                                  <CheckCircle size={18} /> تم التوصيل
+                                  <Truck size={18} /> تم الشحن
                                 </button>
                             </div>
+                            <button 
+                               onClick={() => updateStatus(selectedOrder.id, 'completed')}
+                               className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20"
+                             >
+                               <CheckCircle size={18} /> تم التوصيل
+                             </button>
 
                             <a 
                               href={`https://wa.me/${selectedOrder.phone.startsWith('0') ? '2' + selectedOrder.phone : selectedOrder.phone}`}
