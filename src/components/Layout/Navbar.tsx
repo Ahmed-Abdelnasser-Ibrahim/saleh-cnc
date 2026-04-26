@@ -90,7 +90,9 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-6 lg:gap-8 font-bold">
               <Link href="/" title="الرئيسية" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">الرئيسية</Link>
               <Link href="/products" title="المنتجات" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">المنتجات</Link>
-              <Link href="/categories" title="التصنيفات" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">التصنيفات</Link>
+              <Link href="/track-order" title="تتبع طلبك" className="text-amber-500 hover:text-amber-400 transition-colors text-sm lg:text-base flex items-center gap-2">
+                <Search size={16} /> تتبع طلبك
+              </Link>
               <Link href="/about" title="عن المتجر" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">عن المتجر</Link>
             </div>
 
@@ -224,6 +226,9 @@ export default function Navbar() {
                 <div className="flex flex-col gap-8 text-xl font-bold">
                   <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-amber-500 transition-colors">الرئيسية</Link>
                   <Link href="/products" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-amber-500 transition-colors">المنتجات</Link>
+                  <Link href="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="text-amber-500 font-black flex items-center gap-2">
+                    <Search size={20} /> تتبع طلبك
+                  </Link>
                   <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-amber-500 transition-colors">التصنيفات</Link>
                   <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-amber-500 transition-colors">عن المتجر</Link>
                   <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-amber-500 transition-colors">المفضلة</Link>
