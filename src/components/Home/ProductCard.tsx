@@ -3,7 +3,7 @@
 import React, { useState, memo } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/data";
-import { ShoppingCart, Heart, ChevronDown, ChevronUp } from "lucide-react";
+import { ShoppingCart, Heart, ChevronDown, ChevronUp, Plus, Minus } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +18,17 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [showDescription, setShowDescription] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const incrementQty = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setQuantity(prev => prev + 1);
+  };
+
+  const decrementQty = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -83,17 +94,23 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
         )}
 
         {/* Desktop Hover Overlay Button */}
-        <div className="hidden lg:block absolute inset-x-4 bottom-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
+        <div className="hidden lg:block absolute inset-x-4 bottom-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out space-y-2">
+          <div className="flex items-center bg-black/80 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden">
+            <button onClick={decrementQty} className="p-3 hover:bg-white/10 text-white transition-colors"><Minus size={16} /></button>
+            <div className="flex-1 text-center text-white font-black">{quantity}</div>
+            <button onClick={incrementQty} className="p-3 hover:bg-white/10 text-white transition-colors"><Plus size={16} /></button>
+          </div>
           <button
             onClick={(e) => {
               e.preventDefault();
-              addToCart(product);
+              addToCart(product, quantity);
+              setQuantity(1);
             }}
             aria-label={`إضافة ${product.name} إلى السلة`}
             className="w-full bg-white text-black hover:bg-amber-500 font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
             <ShoppingCart size={18} aria-hidden="true" />
-            إضافة للسلة
+            أضف للسلة
           </button>
         </div>
       </div>
@@ -126,6 +143,12 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
               {product.price} <span className="text-[9px] sm:text-sm font-normal text-gray-500 mr-0.5">ج.م</span>
             </div>
             
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden h-9">
+              <button onClick={decrementQty} className="px-2.5 h-full hover:bg-white/10 text-gray-400 transition-colors"><Minus size={12} /></button>
+              <div className="px-1 text-center text-white font-bold text-xs min-w-[24px]">{quantity}</div>
+              <button onClick={incrementQty} className="px-2.5 h-full hover:bg-white/10 text-gray-400 transition-colors"><Plus size={12} /></button>
+            </div>
+
             <button 
               onClick={() => setShowDescription(!showDescription)}
               aria-label={showDescription ? "إخفاء الوصف" : "عرض الوصف"}
@@ -138,7 +161,8 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
           <button
             onClick={(e) => {
               e.preventDefault();
-              addToCart(product);
+              addToCart(product, quantity);
+              setQuantity(1);
             }}
             aria-label={`إضافة ${product.name} إلى السلة`}
             className="lg:hidden w-full bg-amber-500 text-black py-2.5 sm:py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shadow-lg shadow-amber-500/10 text-[10px] sm:text-sm"
