@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
-import { Search, Package, truck, CheckCircle2, Clock, AlertCircle, ArrowLeft, Smartphone, Hash } from "lucide-react";
+import { Search, Package, Truck, CheckCircle2, Clock, AlertCircle, ArrowLeft, Smartphone, Hash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STATUS_STEPS = [
