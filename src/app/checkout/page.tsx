@@ -136,6 +136,17 @@ export default function CheckoutPage() {
       }
 
       setOrderSuccess({ id: data.orderId });
+      
+      // Track Purchase Event
+      try {
+        const { event } = await import("@/components/Analytics/FacebookPixel");
+        event("Purchase", {
+          value: finalPrice,
+          currency: "EGP",
+          order_id: data.orderId,
+        });
+      } catch (e) {}
+
       clearCart();
       showToast("تم تسجيل طلبك بنجاح ✅", "success");
     } catch (err) {

@@ -43,7 +43,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isInitialized]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = async (product: Product) => {
+    // Track FB Pixel Event
+    try {
+      const { event } = await import("@/components/Analytics/FacebookPixel");
+      event("AddToCart", {
+        content_name: product.name,
+        content_category: product.category,
+        value: product.price,
+        currency: "EGP",
+      });
+    } catch (e) {}
+
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {

@@ -5,6 +5,9 @@ import { CartProvider } from "@/lib/cart-context";
 import { ToastProvider } from "@/lib/toast-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
 import StructuredData from "@/components/SEO/StructuredData";
+import { Suspense } from "react";
+import { FacebookPixel } from "@/components/Analytics/FacebookPixel";
+import { GoogleAnalytics } from "@/components/Analytics/GoogleAnalytics";
 
 
 const cairo = Cairo({
@@ -96,6 +99,10 @@ export default function RootLayout({
         <ToastProvider>
           <CartProvider>
             <WishlistProvider>
+              <Suspense fallback={null}>
+                <FacebookPixel />
+                <GoogleAnalytics />
+              </Suspense>
               <StructuredData 
                 type="Organization" 
                 data={{
