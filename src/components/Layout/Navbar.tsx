@@ -88,10 +88,10 @@ export default function Navbar() {
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-6 lg:gap-8 font-bold">
-              <Link href="/" className="text-gray-400 hover:text-amber-500 transition-colors text-sm lg:text-base">الرئيسية</Link>
-              <Link href="/products" className="text-gray-400 hover:text-amber-500 transition-colors text-sm lg:text-base">المنتجات</Link>
-              <Link href="/categories" className="text-gray-400 hover:text-amber-500 transition-colors text-sm lg:text-base">التصنيفات</Link>
-              <Link href="/about" className="text-gray-400 hover:text-amber-500 transition-colors text-sm lg:text-base">عن المتجر</Link>
+              <Link href="/" title="الرئيسية" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">الرئيسية</Link>
+              <Link href="/products" title="المنتجات" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">المنتجات</Link>
+              <Link href="/categories" title="التصنيفات" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">التصنيفات</Link>
+              <Link href="/about" title="عن المتجر" className="text-gray-200 hover:text-amber-500 transition-colors text-sm lg:text-base">عن المتجر</Link>
             </div>
 
             {/* Actions */}
@@ -101,36 +101,38 @@ export default function Navbar() {
                   type="text"
                   aria-label="بحث عن منتجات"
                   placeholder="ابحث هنا..."
-                  className="bg-transparent border-none outline-none text-sm w-24 lg:w-48 focus:w-32 lg:focus:w-64 transition-all"
+                  className="bg-transparent border-none outline-none text-sm w-24 lg:w-48 focus:w-32 lg:focus:w-64 transition-all text-white placeholder:text-gray-400"
                 />
-                <Search size={16} className="text-gray-500 group-focus-within:text-amber-500" aria-hidden="true" />
+                <Search size={16} className="text-gray-400 group-focus-within:text-amber-500" aria-hidden="true" />
               </div>
 
-              <div className="flex items-center gap-0.5 sm:gap-2">
+              <div className="flex items-center gap-0.5 sm:gap-1.5">
                 <button 
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
                   aria-label="فتح البحث"
-                  className="lg:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                  className="lg:hidden p-3 hover:bg-white/10 rounded-full transition-colors text-gray-200 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <Search size={18} aria-hidden="true" />
+                  <Search size={20} aria-hidden="true" />
                 </button>
 
                 <Link 
                   href={adminLink} 
                   aria-label="حسابي"
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                  title="حسابي"
+                  className="p-3 hover:bg-white/10 rounded-full transition-colors text-gray-200 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <User size={18} className="sm:w-5 sm:h-5" aria-hidden="true" />
+                  <User size={20} className="sm:w-6 sm:h-6" aria-hidden="true" />
                 </Link>
 
                 <Link
                   href="/wishlist"
                   aria-label="المفضلة"
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-amber-500 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                  title="المفضلة"
+                  className="p-3 hover:bg-white/10 rounded-full transition-colors relative text-gray-200 hover:text-amber-500 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <Heart size={18} className={`sm:w-5 sm:h-5 ${wishlist.length > 0 ? "fill-current text-amber-500" : ""}`} aria-hidden="true" />
+                  <Heart size={20} className={`sm:w-6 sm:h-6 ${wishlist.length > 0 ? "fill-current text-amber-500" : ""}`} aria-hidden="true" />
                   {wishlist.length > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 bg-amber-500 text-black text-[9px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full">
+                    <span className="absolute top-1.5 right-1.5 bg-amber-500 text-black text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-black">
                       {wishlist.length}
                     </span>
                   )}
@@ -139,11 +141,12 @@ export default function Navbar() {
                 <button
                   onClick={() => setIsCartOpen(true)}
                   aria-label="سلة المشتريات"
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                  title="سلة المشتريات"
+                  className="p-3 hover:bg-white/10 rounded-full transition-colors relative text-gray-200 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <ShoppingCart size={18} className="sm:w-5 sm:h-5" aria-hidden="true" />
+                  <ShoppingCart size={20} className="sm:w-6 sm:h-6" aria-hidden="true" />
                   {totalItems > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 bg-amber-500 text-black text-[9px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full">
+                    <span className="absolute top-1.5 right-1.5 bg-amber-500 text-black text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-black">
                       {totalItems}
                     </span>
                   )}
@@ -151,10 +154,10 @@ export default function Navbar() {
 
                 <button
                   aria-label="القائمة"
-                  className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                  className="md:hidden p-3 hover:bg-white/10 rounded-full transition-colors text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                   onClick={() => setIsMobileMenuOpen(true)}
                 >
-                  <Menu size={22} className="sm:w-6 sm:h-6" aria-hidden="true" />
+                  <Menu size={24} className="sm:w-7 sm:h-7" aria-hidden="true" />
                 </button>
               </div>
             </div>

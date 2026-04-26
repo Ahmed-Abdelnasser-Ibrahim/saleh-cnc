@@ -1,12 +1,29 @@
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import Link from "next/link";
+import nextDynamic from "next/dynamic";
+import { CategorySkeleton, ProductSkeleton, Skeleton } from "@/components/UI/Skeleton";
 import Hero from "@/components/Home/Hero";
-import Categories from "@/components/Home/Categories";
-import ProductsGrid from "@/components/Home/ProductsGrid";
-import ContactSection from "@/components/Home/ContactSection";
 import { getDb } from "@/lib/db";
 import { categories as staticCategories } from "@/lib/data";
+
+const Categories = nextDynamic(() => import("@/components/Home/Categories"), {
+  loading: () => (
+    <div className="container mx-auto px-4 grid grid-cols-2 lg:grid-cols-4 gap-6 py-12">
+      {[...Array(4)].map((_, i) => <CategorySkeleton key={i} />)}
+    </div>
+  )
+});
+const ProductsGrid = nextDynamic(() => import("@/components/Home/ProductsGrid"), {
+  loading: () => (
+    <div className="container mx-auto px-4 grid grid-cols-2 lg:grid-cols-4 gap-6 py-20">
+      {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
+    </div>
+  )
+});
+const ContactSection = nextDynamic(() => import("@/components/Home/ContactSection"), {
+  loading: () => <Skeleton className="h-[500px] m-8" />
+});
 
 export const revalidate = 3600; // Revalidate every hour
 
