@@ -58,8 +58,6 @@ export default async function Home() {
               <Link href="/wood-cnc-designs" className="text-amber-500 hover:underline font-bold">تصميمات CNC خشب</Link>
               <span className="text-gray-700">|</span>
               <Link href="/laser-wood-products" className="text-amber-500 hover:underline font-bold">منتجات ليزر خشب</Link>
-              <span className="text-gray-700">|</span>
-              <Link href="/cnc-files-download" className="text-amber-500 hover:underline font-bold">تحميل ملفات CNC</Link>
             </div>
           </div>
         </div>
