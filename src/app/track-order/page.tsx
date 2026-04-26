@@ -29,7 +29,7 @@ export default function TrackOrderPage() {
     setOrder(null);
 
     try {
-      const res = await fetch(`/api/orders/track?q=${query}`);
+      const res = await fetch(`/api/orders/track?q=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || "حدث خطأ ما");
