@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/images/logos/logo-1.png",
+    icon: "/favicon.png",
   },
   verification: {
     google: "k2kse5ivOi3itDEo8bSkaO4HiYTb-PsyqAqhaibtACc",
