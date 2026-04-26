@@ -60,11 +60,11 @@ export async function POST(request: Request) {
       const { sendOrderNotificationToAdmin } = await import("@/lib/notifications");
       sendOrderNotificationToAdmin({
         orderId: newOrder._id.toString(),
-        customerName: orderData.customerName,
-        totalPrice: orderData.totalPrice,
+        customerName: orderData.customer,
+        totalPrice: orderData.total,
         items: orderData.items,
         phone: orderData.phone,
-        address: `${orderData.governorate}, ${orderData.city}, ${orderData.address}`,
+        address: `${orderData.city}, ${orderData.address}`,
       });
     } catch (error) {
       console.error("Notification Error:", error);
