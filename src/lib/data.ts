@@ -72,7 +72,7 @@ export interface Order {
   phone: string;
   items: OrderItem[];
   total: number;
-  status: "pending" | "pending_payment_confirmation" | "paid" | "processing" | "completed" | "cancelled" | "payment_rejected";
+  status: "pending" | "pending_payment_confirmation" | "paid" | "processing" | "shipped" | "completed" | "cancelled" | "payment_rejected";
   paymentMethod: "cash_on_delivery" | "vodafone_cash" | "instapay";
   paymentStatus: "not_required" | "pending_confirmation" | "paid" | "rejected";
   paymentProof?: string;
