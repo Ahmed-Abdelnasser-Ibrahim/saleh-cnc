@@ -61,6 +61,7 @@ export default function Footer() {
               <li><Link href="/categories" className="hover:text-amber-500 transition-colors">التصنيفات</Link></li>
               <li><Link href="/custom-order" className="hover:text-amber-500 transition-colors">طلب تصميم خاص</Link></li>
               <li><Link href="/about" className="hover:text-amber-500 transition-colors">من نحن</Link></li>
+              <li><Link href="/return-policy" className="hover:text-amber-500 transition-colors font-bold text-amber-500/80">سياسة الاستبدال والاسترجاع</Link></li>
             </ul>
           </div>
 
