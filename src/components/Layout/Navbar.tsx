@@ -68,7 +68,7 @@ export default function Navbar() {
                 <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-amber-500/30 group-hover:border-amber-500 transition-colors shadow-2xl bg-black">
                   <Image
                     src="/images/logos/logo-v4.jpg"
-                    alt="Saleh CNC Logo"
+                    alt="صالح CNC لوجو"
                     fill
                     sizes="(max-width: 640px) 48px, 64px"
                     className="object-cover scale-110"
@@ -99,29 +99,36 @@ export default function Navbar() {
               <div className="hidden lg:flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 focus-within:border-amber-500/50 transition-all group">
                 <input
                   type="text"
+                  aria-label="بحث عن منتجات"
                   placeholder="ابحث هنا..."
                   className="bg-transparent border-none outline-none text-sm w-24 lg:w-48 focus:w-32 lg:focus:w-64 transition-all"
                 />
-                <Search size={16} className="text-gray-500 group-focus-within:text-amber-500" />
+                <Search size={16} className="text-gray-500 group-focus-within:text-amber-500" aria-hidden="true" />
               </div>
 
               <div className="flex items-center gap-0.5 sm:gap-2">
                 <button 
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
-                  className="lg:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0"
+                  aria-label="فتح البحث"
+                  className="lg:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <Search size={18} />
+                  <Search size={18} aria-hidden="true" />
                 </button>
 
-                <Link href={adminLink} className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0">
-                  <User size={18} className="sm:w-5 sm:h-5" />
+                <Link 
+                  href={adminLink} 
+                  aria-label="حسابي"
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                >
+                  <User size={18} className="sm:w-5 sm:h-5" aria-hidden="true" />
                 </Link>
 
                 <Link
                   href="/wishlist"
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-amber-500 shrink-0"
+                  aria-label="المفضلة"
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-amber-500 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <Heart size={18} className={`sm:w-5 sm:h-5 ${wishlist.length > 0 ? "fill-current text-amber-500" : ""}`} />
+                  <Heart size={18} className={`sm:w-5 sm:h-5 ${wishlist.length > 0 ? "fill-current text-amber-500" : ""}`} aria-hidden="true" />
                   {wishlist.length > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 bg-amber-500 text-black text-[9px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full">
                       {wishlist.length}
@@ -131,9 +138,10 @@ export default function Navbar() {
 
                 <button
                   onClick={() => setIsCartOpen(true)}
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-white shrink-0"
+                  aria-label="سلة المشتريات"
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors relative text-gray-400 hover:text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
-                  <ShoppingCart size={18} className="sm:w-5 sm:h-5" />
+                  <ShoppingCart size={18} className="sm:w-5 sm:h-5" aria-hidden="true" />
                   {totalItems > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 bg-amber-500 text-black text-[9px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full">
                       {totalItems}
@@ -142,10 +150,11 @@ export default function Navbar() {
                 </button>
 
                 <button
-                  className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-white shrink-0"
+                  aria-label="القائمة"
+                  className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors text-white shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                   onClick={() => setIsMobileMenuOpen(true)}
                 >
-                  <Menu size={22} className="sm:w-6 sm:h-6" />
+                  <Menu size={22} className="sm:w-6 sm:h-6" aria-hidden="true" />
                 </button>
               </div>
             </div>

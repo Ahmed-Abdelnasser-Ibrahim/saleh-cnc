@@ -65,13 +65,14 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
         {/* Wishlist Button */}
         <button 
           onClick={handleToggleWishlist}
-          className={`absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl transition-all transform hover:scale-110 border border-white/10 z-10 ${
+          aria-label={isInWishlist(product.id) ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+          className={`absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl transition-all transform hover:scale-110 border border-white/10 z-10 outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
             isInWishlist(product.id) 
               ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" 
               : "bg-black/50 text-white hover:text-amber-500 hover:bg-black/70"
           }`}
         >
-          <Heart size={14} className={`sm:w-5 sm:h-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} />
+          <Heart size={14} className={`sm:w-5 sm:h-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} aria-hidden="true" />
         </button>
 
         {/* Badge */}
@@ -88,9 +89,10 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
               e.preventDefault();
               addToCart(product);
             }}
-            className="w-full bg-white text-black hover:bg-amber-500 font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl active:scale-95"
+            aria-label={`إضافة ${product.name} إلى السلة`}
+            className="w-full bg-white text-black hover:bg-amber-500 font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
-            <ShoppingCart size={18} />
+            <ShoppingCart size={18} aria-hidden="true" />
             إضافة للسلة
           </button>
         </div>
@@ -129,16 +131,18 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
                 e.preventDefault();
                 addToCart(product);
               }}
-              className="lg:hidden p-2 sm:p-2.5 bg-amber-500 text-black rounded-lg sm:rounded-xl hover:bg-amber-600 transition-all active:scale-90"
+              aria-label={`إضافة ${product.name} إلى السلة`}
+              className="lg:hidden p-2 sm:p-2.5 bg-amber-500 text-black rounded-lg sm:rounded-xl hover:bg-amber-600 transition-all active:scale-90 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             >
-              <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
+              <ShoppingCart size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />
             </button>
 
             <button 
               onClick={() => setShowDescription(!showDescription)}
-              className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl transition-all ${showDescription ? "bg-white/10 text-amber-500" : "text-gray-500 hover:text-white hover:bg-white/5 border border-white/5"}`}
+              aria-label={showDescription ? "إخفاء الوصف" : "عرض الوصف"}
+              className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${showDescription ? "bg-white/10 text-amber-500" : "text-gray-500 hover:text-white hover:bg-white/5 border border-white/5"}`}
             >
-              {showDescription ? <ChevronUp size={16} className="sm:w-5 sm:h-5" /> : <ChevronDown size={16} className="sm:w-5 sm:h-5" />}
+              {showDescription ? <ChevronUp size={16} className="sm:w-5 sm:h-5" aria-hidden="true" /> : <ChevronDown size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />}
             </button>
           </div>
         </div>
