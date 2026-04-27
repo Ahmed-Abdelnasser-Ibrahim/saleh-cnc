@@ -51,9 +51,18 @@ export default function LoginPage() {
       >
         <div className="glass p-8 md:p-10 rounded-3xl shadow-2xl border border-white/10">
           <div className="text-center mb-10">
-            <Link href="/" className="text-3xl font-bold flex items-center justify-center gap-2 mb-4">
-              <span className="text-amber-500">صالح</span>
-              <span className="text-white">CNC</span>
+            <Link href="/" className="flex flex-col items-center gap-4 mb-6 group">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-amber-500/20 group-hover:border-amber-500 transition-colors shadow-2xl bg-black">
+                <img
+                  src="/images/logos/logo-1.png"
+                  alt="Saleh CNC Logo"
+                  className="w-full h-full object-cover scale-110"
+                />
+              </div>
+              <div className="flex items-center justify-center gap-2 text-3xl font-bold">
+                <span className="text-amber-500">صالح</span>
+                <span className="text-white">CNC</span>
+              </div>
             </Link>
             <h1 className="text-2xl font-bold text-white">لوحة التحكم</h1>
             <p className="text-gray-400 mt-2">يرجى تسجيل الدخول للمتابعة</p>

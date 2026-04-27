@@ -107,7 +107,7 @@ export default function RootLayout({
                 data={{
                   name: "صالح CNC",
                   url: "https://saleh-cnc.com",
-                  logo: "https://saleh-cnc.com/images/logos/logo-v4.jpg",
+                   logo: "https://saleh-cnc.com/images/logos/logo-1.png",
                   contactPoint: {
                     "@type": "ContactPoint",
                     "telephone": "+201068256479",

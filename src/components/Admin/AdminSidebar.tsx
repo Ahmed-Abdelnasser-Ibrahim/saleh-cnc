@@ -47,7 +47,7 @@ export default function AdminSidebar() {
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-lg shadow-amber-500/5 bg-black">
               <Image
-                src="/images/logos/logo-v4.jpg"
+                src="/images/logos/logo-1.png"
                 alt="Saleh CNC Logo"
                 width={48}
                 height={48}

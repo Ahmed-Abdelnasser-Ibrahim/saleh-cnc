@@ -103,6 +103,21 @@ export default function AdminSettingsPage() {
                 <Globe size={20} className="text-amber-500" />
                 المعلومات الأساسية
               </h2>
+              <div className="mb-8 flex flex-col items-center sm:items-start gap-4">
+                <label className="text-sm text-gray-400">شعار الموقع الحالي</label>
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-amber-500/20 bg-black shadow-xl">
+                    <img 
+                      src="/images/logos/logo-1.png" 
+                      alt="Site Logo" 
+                      className="w-full h-full object-cover scale-110"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-full cursor-not-allowed">
+                    <span className="text-[10px] font-bold text-white">ثابت حالياً</span>
+                  </div>
+                </div>
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-400">اسم المتجر</label>

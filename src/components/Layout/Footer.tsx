@@ -25,7 +25,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-6 group">
               <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-amber-500/20 group-hover:border-amber-500 transition-colors shadow-xl bg-black">
                 <Image
-                  src="/images/logos/logo-v4.jpg"
+                  src="/images/logos/logo-1.png"
                   alt="Saleh CNC Logo"
                   width={56}
                   height={56}
