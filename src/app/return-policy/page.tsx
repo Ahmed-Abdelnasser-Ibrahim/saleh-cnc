@@ -115,7 +115,7 @@ export default function ReturnPolicyPage() {
                 الأمر بسيط جداً، كل ما عليك هو التواصل معنا عبر الواتساب وإرسال رقم الطلب وصورة المنتج، وسيقوم فريق الدعم بمراجعة طلبك خلال 24 ساعة وتنسيق موعد مع شركة الشحن لاستلام المرتجع.
               </p>
               <a 
-                href="https://wa.me/201068256479" 
+                href="https://wa.me/01011925391" 
                 className="inline-flex items-center gap-3 bg-[#25D366] hover:bg-[#20ba5a] text-white px-8 py-4 rounded-2xl font-black transition-all shadow-xl shadow-green-500/20"
               >
                 تواصل معنا عبر الواتساب الآن

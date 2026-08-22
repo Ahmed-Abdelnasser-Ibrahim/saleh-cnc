@@ -38,7 +38,7 @@ export default function CustomOrderPage() {
       `📝 *الوصف:* ${formData.description}\n\n` +
       `تم الإرسال من نموذج الطلبات الخاصة في صالح CNC`;
 
-    const whatsappUrl = `https://wa.me/201068256479?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/201011925391?text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, "_blank");
     setIsSubmitting(false);

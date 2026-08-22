@@ -14,12 +14,12 @@ export interface ISettings extends Document {
 
 const SettingsSchema: Schema = new Schema({
   siteName: { type: String, default: "صالح CNC" },
-  whatsapp: { type: String, default: "01068256479" },
+  whatsapp: { type: String, default: "01011925391" },
   email: { type: String, default: "info@saleh-cnc.com" },
   facebook: { type: String, default: "#" },
   instagram: { type: String, default: "#" },
   address: { type: String, default: "القاهرة، مصر" },
-  vodafoneCashNumber: { type: String, default: "01068256479" },
+  vodafoneCashNumber: { type: String, default: "01011925391" },
   instapayId: { type: String, default: "saleh@instapay" },
   shippingRates: {
     type: Map,
@@ -54,4 +54,19 @@ const SettingsSchema: Schema = new Schema({
   }
 });
 
-export default mongoose.models.Settings || mongoose.model<ISettings>("Settings", SettingsSchema);
+const mongooseSettingsModel = mongoose.models.Settings || mongoose.model<ISettings>("Settings", SettingsSchema);
+
+const handler = {
+  get(target: any, prop: string) {
+    if ((global as any).isMockDb) {
+      const mock = (global as any).mockModels?.settings;
+      if (mock && prop in mock) {
+        return (mock as any)[prop];
+      }
+    }
+    return target[prop];
+  }
+};
+
+const proxy = new Proxy(mongooseSettingsModel, handler);
+export default proxy;

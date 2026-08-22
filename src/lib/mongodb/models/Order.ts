@@ -31,4 +31,20 @@ const OrderSchema: Schema = new Schema({
   city: { type: String, required: true },
 }, { timestamps: true });
 
-export default mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);
+const mongooseOrderModel = mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);
+
+const handler = {
+  get(target: any, prop: string) {
+    if ((global as any).isMockDb) {
+      const mock = (global as any).mockModels?.orders;
+      if (mock && prop in mock) {
+        return (mock as any)[prop];
+      }
+    }
+    return target[prop];
+  }
+};
+
+const proxy = new Proxy(mongooseOrderModel, handler);
+export default proxy;
+

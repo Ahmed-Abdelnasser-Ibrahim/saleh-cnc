@@ -2,6 +2,7 @@
 
 import React, { useState, memo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Product } from "@/lib/data";
 import { ShoppingCart, Heart, ChevronDown, ChevronUp, Plus, Minus } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
@@ -62,7 +63,7 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
         }} 
       />
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-[#1a1a1a]">
+      <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-[#1a1a1a] block">
         <Image
           src={product.image}
           alt={product.name}
@@ -113,16 +114,16 @@ const ProductCard = memo(({ product, priority = false }: ProductCardProps) => {
             أضف للسلة
           </button>
         </div>
-      </div>
+      </Link>
 
       {/* Content Area */}
       <div className="p-3 sm:p-6 flex flex-col flex-1">
         <span className="text-amber-500 text-[8px] sm:text-[11px] font-bold uppercase tracking-wider mb-1 sm:mb-2 block">
           {product.category}
         </span>
-        <h3 className="text-[11px] sm:text-lg font-bold text-white mb-2 sm:mb-4 line-clamp-1 group-hover:text-amber-500 transition-colors">
+        <Link href={`/products/${product.id}`} className="text-[11px] sm:text-lg font-bold text-white mb-2 sm:mb-4 line-clamp-1 group-hover:text-amber-500 transition-colors block">
           {product.name}
-        </h3>
+        </Link>
         
         <AnimatePresence>
           {showDescription && (

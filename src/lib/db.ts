@@ -14,7 +14,7 @@ export async function getDb(): Promise<DbData> {
   if (!dbSettings) {
     dbSettings = await SettingsModel.create({
       siteName: "صالح CNC",
-      whatsapp: "01068256479",
+      whatsapp: "01011925391",
       email: "info@saleh-cnc.com",
       address: "القاهرة، مصر"
     });

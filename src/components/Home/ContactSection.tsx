@@ -17,8 +17,8 @@ export default function ContactSection() {
     {
       name: "واتساب",
       icon: WhatsAppIcon,
-      value: "01234567890",
-      link: "https://wa.me/201234567890",
+      value: "+201011925391",
+      link: "https://wa.me/201011925391",
       color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500 hover:text-white"
     },
     {

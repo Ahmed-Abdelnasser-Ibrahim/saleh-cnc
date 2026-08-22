@@ -1,7 +1,7 @@
 export const PAYMENT_CONFIG = {
-  vodafoneCashNumber: "01068256479",
-  instaPayAccount: "01068256479",
-  whatsappNumber: "201068256479",
+  vodafoneCashNumber: "01011925391",
+  instaPayAccount: "01011925391",
+  whatsappNumber: "01011925391",
   currency: "EGP",
   paymentMethods: {
     cod: {

@@ -22,13 +22,13 @@ export default function AdminSettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [settings, setSettings] = useState<any>({
     siteName: "صالح CNC",
-    whatsapp: "01068256479",
+    whatsapp: "01011925391",
     email: "info@saleh-cnc.com",
     facebook: "#",
     instagram: "#",
     address: "القاهرة، مصر",
     shippingRates: {},
-    vodafoneCashNumber: "01068256479",
+    vodafoneCashNumber: "01011925391",
     instapayId: "saleh@instapay"
   });
 

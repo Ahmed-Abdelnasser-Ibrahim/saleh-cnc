@@ -15,7 +15,7 @@ const WhatsAppIcon = () => (
 );
 
 export default function FloatingWhatsApp() {
-  const phoneNumber = "201068256479"; // رقم الواتساب الحقيقي لـ صالح CNC
+  const phoneNumber = "01011925391"; // رقم الواتساب الجديد لـ صالح CNC
   const message = encodeURIComponent("السلام عليكم، كنت محتاج استفسر عن بعض المنتجات من موقع صالح CNC");
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

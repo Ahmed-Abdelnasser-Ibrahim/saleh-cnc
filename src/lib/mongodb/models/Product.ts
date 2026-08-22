@@ -18,4 +18,20 @@ const ProductSchema: Schema = new Schema({
   description: { type: String },
 }, { timestamps: true });
 
-export default mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
+const mongooseProductModel = mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
+
+const handler = {
+  get(target: any, prop: string) {
+    if ((global as any).isMockDb) {
+      const mock = (global as any).mockModels?.products;
+      if (mock && prop in mock) {
+        return (mock as any)[prop];
+      }
+    }
+    return target[prop];
+  }
+};
+
+const proxy = new Proxy(mongooseProductModel, handler);
+export default proxy;
+

@@ -25,7 +25,7 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [shippingPrice, setShippingPrice] = useState(0);
   const [shippingRates, setShippingRates] = useState<Record<string, number>>({});
-  const [vodafoneNumber, setVodafoneNumber] = useState("01068256479");
+  const [vodafoneNumber, setVodafoneNumber] = useState("01011925391");
   const [instapayId, setInstapayId] = useState("saleh@instapay");
   
   const [formData, setFormData] = useState({
@@ -223,7 +223,7 @@ export default function CheckoutPage() {
 
            <div className="flex flex-col gap-4">
               <a 
-                href={`https://wa.me/201068256479?text=${encodeURIComponent(`السلام عليكم، لقد قمت بإتمام طلب جديد برقم (#${orderSuccess.id.slice(-6).toUpperCase()}) باسم ${formData.customer}. يرجى تأكيد الطلب.`)}`}
+                href={`https://wa.me/01011925391?text=${encodeURIComponent(`السلام عليكم، لقد قمت بإتمام طلب جديد برقم (#${orderSuccess.id.slice(-6).toUpperCase()}) باسم ${formData.customer}. يرجى تأكيد الطلب.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-white px-8 py-5 rounded-2xl font-black transition-all shadow-xl shadow-green-500/20 flex items-center justify-center gap-3 text-lg"
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                   <Home size={22} /> العودة للتسوق
                 </button>
                 <a 
-                  href={`https://wa.me/201068256479`}
+                  href={`https://wa.me/01011925391`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/5 hover:bg-white/10 text-white px-8 py-5 rounded-2xl font-black transition-all border border-white/10 flex items-center justify-center gap-3"

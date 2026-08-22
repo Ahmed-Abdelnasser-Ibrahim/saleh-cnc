@@ -110,7 +110,7 @@ export default function RootLayout({
                    logo: "https://saleh-cnc.com/images/logos/logo-1.png",
                   contactPoint: {
                     "@type": "ContactPoint",
-                    "telephone": "+201068256479",
+                    "telephone": "+201011925391",
                     "contactType": "customer service",
                     "areaServed": "EG",
                     "availableLanguage": "Arabic"
